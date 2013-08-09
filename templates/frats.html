@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Frats{% endblock %}
+
+{% block content %}
+<h1>Choose your frat!</h1>
+		<ul>
+		{% for frat in frats %}
+				<li><h2>{{frat.university}}</h2>
+				<a href="/frats/{{ frat.pk }}"<p>{{frat.name}}</p></a>
+		{% endfor %}
+		</ul>
+{% endblock %}

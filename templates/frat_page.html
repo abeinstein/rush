@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ frat.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ frat.name }} -- {{ frat.chapter}} Chapter</h1>
+<ul>
+{% for rush in frat.rush_set.all %}
+<li>{{rush}} 
+<a href="{% url 'thumbs' 1 user.id rush.id %}">Thumbs Up</a> {{ rush.reputation.thumbsup}}
+<a href="{% url 'thumbs' 0 user.id rush.id %}">Thumbs Down</a> {{rush.reputation.thumbsdown}}
+</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

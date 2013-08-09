@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<title>{% block title %}{% endblock %}</title>
+	</head>
+	<body>
+        {% if user.is_authenticated %}
+        <a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
+        {% endif %}
+		{% block content %}{% endblock %}
+	</body>
+</html>
