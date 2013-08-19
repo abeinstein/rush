@@ -13,22 +13,17 @@
 <a href="{% url 'thumbs' 0 user.id rush.id %}">Thumbs Down</a> {{rush.reputation.thumbsdown}}
 </li>
 Comments:
-{% render_comment_list for rush %}
+{% for comment in rush.comment_set.all %}
+<p>{{ comment.userprofile.user }} says: {{ comment.body }}<p>
+{% endfor %}
 Post a comment:
 {% if user.is_authenticated %}
-    {% get_comment_form for rush as form %}
-    <form action="{% comment_form_target %}" method="POST">
+<form action="{% url 'add_comment' rush.pk user.userprofile.pk %}" method="POST">
     {% csrf_token %}
-    {{ form.comment }}
-    {{ form.honeypot }}
-    {{ form.content_type }}
-    {{ form.object_pk }}
-    {{ form.timestamp }}
-    {{ form.security_hash }}
-    <input type="hidden" name="next" value="{% url 'home' %}" />
-</br>
-    <input type="submit" value="Add comment" id="id_submit" />
-    </form>
+    <p>{{ form.as_p }}</p>
+    <input type="submit" value="Post Comment">
+</form>
+
 {% else %}
     <p>Please <a href="{% url 'auth_login' %}">log in</a> to leave a comment.</p>
 {% endif %}

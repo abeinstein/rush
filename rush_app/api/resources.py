@@ -1,13 +1,13 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
-from rush_app.models import Rush, Frat, UserProfile
-from django.contrib.comments import Comment
+from rush_app.models import Rush, Frat, UserProfile, Comment
 from django.contrib.auth.models import User
 from django.conf.urls import url
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import check_password, make_password
-from tastypie.http import HttpUnauthorized, HttpForbidden
+from tastypie.http import HttpUnauthorized, HttpForbidden, HttpCreated, HttpAccepted, HttpBadRequest, HttpGone
+from tastypie.authorization import Authorization, DjangoAuthorization, Authorization
 from tastypie.authentication import BasicAuthentication
 from rush_app.config import Codes
 
@@ -27,11 +27,12 @@ class FratResource(ModelResource):
 
 class RushResource(ModelResource):
     frat = fields.ForeignKey(FratResource, 'frat')
-    comments = fields.ToManyField('rush_app.api.resources.CommentResource', 'comments', related_name='rush', full=True)
+    comments = fields.ToManyField('rush_app.api.resources.CommentResource', 'comment_set', related_name='rush', full=True)
 
     class Meta:
         queryset = Rush.objects.all()
-        allowed_methods = ['get']
+        allowed_methods = ['get', 'post']
+        authorization = DjangoAuthorization()
 
 class UserProfileResource(ModelResource):
     user = fields.ToOneField("%s.UserResource" % RESOURCE_ROOT, 'user', full=True)
@@ -40,7 +41,9 @@ class UserProfileResource(ModelResource):
     class Meta:
         queryset = UserProfile.objects.all()
         resource_name = "profile"
-        authentication = BasicAuthentication() # CHANGE!!
+        allowed_methods = ['get', 'post', 'patch']
+        authorization = Authorization()
+        #authentication = BasicAuthentication() 
 
     def dehydrate(self, bundle):
         '''Merge userprofile with user field'''
@@ -55,7 +58,7 @@ class UserProfileResource(ModelResource):
 
     def prepend_urls(self):
         return [
-            url(r"^(?P<resource_name>%s_fb)/(?P<facebook_id>\w+)/$" % 
+            url(r"^(?P<resource_name>%s)/(?P<facebook_id>\w+)/fb/$" % 
                 self._meta.resource_name, self.wrap_view('dispatch_detail'), 
                 name="api_dispatch_detail"),
             url(r"^(?P<resource_name>%s)/login/$" %
@@ -69,7 +72,7 @@ class UserProfileResource(ModelResource):
     def login(self, request, **kwargs):
         self.method_check(request, allowed=['post'])
         data = self.deserialize(request, request.body) 
-        username = data.get('username', '')
+        username = data.get('email', '')
         password = data.get('password', '')
         facebook_id = data.get('facebook_id', '')
         user = authenticate(username=username, password=password)
@@ -101,7 +104,6 @@ class UserProfileResource(ModelResource):
             response = Codes.FRAT_DOES_NOT_EXIST
         else:
             hashed_password = frat.password
-
             if check_password(frat_password, hashed_password):
                 # Frat exists, will create user
                 if facebook_id:
@@ -111,25 +113,17 @@ class UserProfileResource(ModelResource):
                     u = User.objects.create_user(email, email, password)
                 else:
                     response = Codes.BLANK_REQUEST
-
                 u.save()
-
                 # Now, will create user profile
                 pro = UserProfile(user=u, frat=frat)
                 if facebook_id:
                     pro.facebook_id = facebook_id
                 pro.save()
-
                 response = Codes.USER_CREATED_SUCCESSFULLY
             else:
                 response = Codes.FRAT_INVALID_PASSWORD
 
         return self.create_response(request, {'success': response})
-
-
-
-
-
 
 
 class UserResource(ModelResource):
@@ -138,11 +132,48 @@ class UserResource(ModelResource):
 
 
 class CommentResource(ModelResource):
-    rush = fields.ToOneField(RushResource, 'content_object')
-    user = fields.ToOneField(UserResource, 'user')
+    rush = fields.ToOneField(RushResource, 'rush')
+    profile = fields.ToOneField(UserProfileResource, 'userprofile')
 
     class Meta:
         queryset = Comment.objects.all()
+        allowed_methods = ['get', 'post', 'delete']
+        authorization = DjangoAuthorization() 
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/add/$" %
+                self._meta.resource_name,
+                self.wrap_view('add'), name="api_add_comment"),
+        ]
+
+    def add(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        data = self.deserialize(request, request.body)
+
+        rush_id = data.get('rush_id', '')
+        prof_id = data.get('prof_id', '')
+        body = data.get('body', '')
+
+        if not rush_id or not prof_id:
+            return self.create_response(request, {'success': Codes.INVALID_FORMAT})
+
+        try:
+            rush = Rush.objects.get(pk=rush_id)
+        except ObjectDoesNotExist:
+            return self.create_response(request, {'success': Codes.RUSH_DOES_NOT_EXIST})
+
+        try:
+            prof = UserProfile.objects.get(pk=prof_id)
+        except ObjectDoesNotExist:
+            return self.create_response(request, {'success': Codes.USER_DOES_NOT_EXIST})
+
+        comment = Comment(body=body, rush=rush, userprofile=prof)
+        comment.save()
+        return self.create_response(request, {'success': Codes.ADD_COMMENT_SUCCESS})
+
+
+        
 
 
 

@@ -3,11 +3,16 @@ from django.contrib import admin
 from rush_app.views import all_frats, show_frat
 from django.contrib.auth.views import login, logout
 from tastypie.api import Api
-from rush_app.api.resources import RushResource
+from rush_app.api.resources import RushResource, CommentResource, FratResource
+from rush_app.api.resources import UserProfileResource, UserResource
 
 admin.autodiscover()
 v1_api = Api(api_name='v1')
 v1_api.register(RushResource())
+v1_api.register(CommentResource())
+v1_api.register(FratResource())
+v1_api.register(UserProfileResource())
+v1_api.register(UserResource())
 
 urlpatterns = patterns('',
     # Examples:
