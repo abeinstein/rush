@@ -24,7 +24,7 @@ class FratResource(ModelResource):
 
     class Meta:
         queryset = Frat.objects.all()
-        allowed_methods = ['get']
+        allowed_methods = ['get', 'post', 'patch', 'delete']
         filtering = {
             'name': ALL_WITH_RELATIONS,
             'chapter': ALL_WITH_RELATIONS,
