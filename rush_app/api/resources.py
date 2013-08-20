@@ -127,7 +127,13 @@ class UserProfileResource(ModelResource):
                                             {"message": error_message},
                                             response_class=HttpBadRequest
                                             )
-            u.save()
+            try:
+                u.save()
+            except User.IntegrityError:
+                error_message = "User already exists"
+                return self.create_response(request, {"message": error_message, "duplicate": 1},
+                                            response_class=HttpBadRequest)
+
 
             # Now, will create user profile
             pro = UserProfile(user=u, frat=frat)
