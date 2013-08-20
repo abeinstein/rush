@@ -32,7 +32,7 @@ class FratResource(ModelResource):
 
 class RushResource(ModelResource):
     frat = fields.ForeignKey(FratResource, 'frat')
-    comments = fields.ToManyField('rush_app.api.resources.CommentResource', 'comment_set', related_name='rush', full=True)
+    #comments = fields.ToManyField('rush_app.api.resources.CommentResource', 'comment_set', related_name='rush', full=True)
 
     class Meta:
         queryset = Rush.objects.all()
@@ -134,7 +134,7 @@ class UserProfileResource(ModelResource):
             if facebook_id:
                 pro.facebook_id = facebook_id
             pro.save()
-            return self.create_response(request, response_class=HttpCreated)
+            return self.create_response(request, {}, response_class=HttpCreated)
         else:
             error_message = "Frat found, but invalid password"
             return self.create_response(request, 
