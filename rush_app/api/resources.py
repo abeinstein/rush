@@ -31,7 +31,7 @@ class RushResource(ModelResource):
 
     class Meta:
         queryset = Rush.objects.all()
-        allowed_methods = ['get', 'post']
+        allowed_methods = ['get', 'post', 'patch', 'delete']
         authorization = DjangoAuthorization()
 
 class UserProfileResource(ModelResource):
@@ -61,30 +61,32 @@ class UserProfileResource(ModelResource):
             url(r"^(?P<resource_name>%s)/(?P<facebook_id>\w+)/fb/$" % 
                 self._meta.resource_name, self.wrap_view('dispatch_detail'), 
                 name="api_dispatch_detail"),
-            url(r"^(?P<resource_name>%s)/login/$" %
+            url(r"^(?P<resource_name>%s)/sign_in/$" %
                 self._meta.resource_name,
-                self.wrap_view('login'), name="api_login"),
+                self.wrap_view('sign_in'), name="api_sign_in"),
             url(r"^(?P<resource_name>%s)/create/$" %
                 self._meta.resource_name,
                 self.wrap_view('create'), name="api_create"),
         ]
 
-    def login(self, request, **kwargs):
+    def sign_in(self, request, **kwargs):
+        ''' Verifies that a user is in the database '''
         self.method_check(request, allowed=['post'])
         data = self.deserialize(request, request.body) 
         username = data.get('email', '')
         password = data.get('password', '')
         facebook_id = data.get('facebook_id', '')
         user = authenticate(username=username, password=password)
+
         if user:
-            return self.create_response(request, {'success': Codes.LOGIN_SUCCESS})
+            return self.create_response(request, {'is_verified': 1, 'id': user.id})
         else:
             try:
                 user = UserProfile.objects.get(facebook_id=facebook_id)
+                return self.create_response(request, {'is_verified': 1, 'id': user.id})
             except ObjectDoesNotExist:
-                return self.create_response(request, {'success': Codes.LOGIN_FAILURE})
-            else:
-                return self.create_response(request, {'success': Codes.LOGIN_SUCCESS})
+                return self.create_response(request, {'is_verified': 0})
+                
 
     def create(self, request, **kwargs):
         self.method_check(request, allowed=['post'])
@@ -101,29 +103,39 @@ class UserProfileResource(ModelResource):
         try:
             frat = Frat.objects.get(name=frat_name, chapter=frat_chapter)
         except ObjectDoesNotExist:
-            response = Codes.FRAT_DOES_NOT_EXIST
-        else:
-            hashed_password = frat.password
-            if check_password(frat_password, hashed_password):
-                # Frat exists, will create user
-                if facebook_id:
-                    u = User.objects.create_user(facebook_id)
-                elif email and password:
-                    # Note: we are using email as the username
-                    u = User.objects.create_user(email, email, password)
-                else:
-                    response = Codes.BLANK_REQUEST
-                u.save()
-                # Now, will create user profile
-                pro = UserProfile(user=u, frat=frat)
-                if facebook_id:
-                    pro.facebook_id = facebook_id
-                pro.save()
-                response = Codes.USER_CREATED_SUCCESSFULLY
-            else:
-                response = Codes.FRAT_INVALID_PASSWORD
+            error_message = "Frat cannot be found!"
+            return self.create_response(request, {"message": error_message},
+                                        response_class=HttpBadRequest
+                                        )
 
-        return self.create_response(request, {'success': response})
+        hashed_password = frat.password
+        if check_password(frat_password, hashed_password):
+            # Frat exists, will create user
+            if facebook_id:
+                u = User.objects.create_user(facebook_id)
+            elif email and password:
+                # Note: we are using email as the username
+                u = User.objects.create_user(email, email, password)
+            else:
+                error_message = "Please provide either email/password or facebook id"
+                return self.create_response(request, 
+                                            {"message": error_message},
+                                            response_class=HttpBadRequest
+                                            )
+            u.save()
+
+            # Now, will create user profile
+            pro = UserProfile(user=u, frat=frat)
+            if facebook_id:
+                pro.facebook_id = facebook_id
+            pro.save()
+            return self.create_response(request, response_class=HttpCreated)
+        else:
+            error_message = "Frat found, but invalid password"
+            return self.create_response(request, 
+                                        {"message": error_message},
+                                        response_class=HttpBadRequest)
+
 
 
 class UserResource(ModelResource):
@@ -156,21 +168,27 @@ class CommentResource(ModelResource):
         body = data.get('body', '')
 
         if not rush_id or not prof_id:
-            return self.create_response(request, {'success': Codes.INVALID_FORMAT})
+            error_message = "Please provide a non-blank rush_id and prof_id"
+            return self.create_response(request, {'message': error_message}, 
+                                        response_class=HttpBadRequest)
 
         try:
             rush = Rush.objects.get(pk=rush_id)
         except ObjectDoesNotExist:
-            return self.create_response(request, {'success': Codes.RUSH_DOES_NOT_EXIST})
+            error_message = "Rush does not exist."
+            return self.create_response(request, {'message': error_message},
+                                        response_class=HttpBadRequest)
 
         try:
             prof = UserProfile.objects.get(pk=prof_id)
         except ObjectDoesNotExist:
-            return self.create_response(request, {'success': Codes.USER_DOES_NOT_EXIST})
+            error_message = "Profile does not exist."
+            return self.create_response(request, {'message': error_message},
+                                        response_class=HttpBadRequest)
 
         comment = Comment(body=body, rush=rush, userprofile=prof)
         comment.save()
-        return self.create_response(request, {'success': Codes.ADD_COMMENT_SUCCESS})
+        return self.create_response(request, response_class=HttpCreated)
 
 
         
