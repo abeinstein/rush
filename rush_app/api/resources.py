@@ -82,8 +82,8 @@ class UserProfileResource(ModelResource):
             return self.create_response(request, {'is_verified': 1, 'id': user.id})
         else:
             try:
-                user = UserProfile.objects.get(facebook_id=facebook_id)
-                return self.create_response(request, {'is_verified': 1, 'id': user.id})
+                profile = UserProfile.objects.get(facebook_id=facebook_id)
+                return self.create_response(request, {'is_verified': 1, 'id': profile.user.id})
             except ObjectDoesNotExist:
                 return self.create_response(request, {'is_verified': 0})
                 
