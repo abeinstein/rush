@@ -1,9 +1,10 @@
 from annoying.fields import AutoOneToOneField
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.hashers import make_password
 from django.forms import ModelForm
-#from django.contrib.comments import Comment
-#from django.contrib.contenttypes import generic
+
+
 
 class Rush(models.Model):
 	'''A boy living out his last days as a GDI'''
@@ -37,6 +38,15 @@ class Frat(models.Model):
 
 	class Meta:
 		unique_together = ("name", "chapter")
+
+
+	def save(self, *args, **kwargs):
+		''' Custom save method to hash frat passwords '''
+		# First time save is called
+		if not self.pk:
+			self.password = make_password(self.password)
+		super(Frat, self).save(*args, **kwargs)
+
 
 	def __unicode__(self):
 		return self.name + " at " + self.university
