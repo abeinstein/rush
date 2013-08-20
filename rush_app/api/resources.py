@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from tastypie.http import HttpUnauthorized, HttpForbidden, HttpCreated, HttpAccepted, HttpBadRequest, HttpGone
 from tastypie.authorization import Authorization, DjangoAuthorization, Authorization
 from tastypie.authentication import BasicAuthentication
+from tastypie.resources import ALL_WITH_RELATIONS
 from rush_app.config import Codes
 
 RESOURCE_ROOT = 'rush_app.api.resources'
@@ -23,6 +24,10 @@ class FratResource(ModelResource):
     class Meta:
         queryset = Frat.objects.all()
         allowed_methods = ['get']
+        filtering = {
+            'name': ALL_WITH_RELATIONS,
+            'chapter': ALL_WITH_RELATIONS,
+        }
 
 
 class RushResource(ModelResource):
