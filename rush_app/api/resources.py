@@ -117,22 +117,28 @@ class UserProfileResource(ModelResource):
         if check_password(frat_password, hashed_password):
             # Frat exists, will create user
             if facebook_id:
-                u = User.objects.create_user(facebook_id)
+                try:
+                    u = User.objects.create_user(facebook_id)
+                except User.IntegrityError:
+                    error_message = "User already exists"
+                    return self.create_response(request, {"message": error_message, "duplicate": 1},
+                                            response_class=HttpBadRequest)
             elif email and password:
                 # Note: we are using email as the username
-                u = User.objects.create_user(email, email, password)
+                try:
+                    u = User.objects.create_user(email, email, password)
+                except User.IntegrityError:
+                    error_message = "User already exists"
+                    return self.create_response(request, {"message": error_message, "duplicate": 1},
+                                            response_class=HttpBadRequest)
             else:
                 error_message = "Please provide either email/password or facebook id"
                 return self.create_response(request, 
                                             {"message": error_message},
                                             response_class=HttpBadRequest
                                             )
-            try:
-                u.save()
-            except User.IntegrityError:
-                error_message = "User already exists"
-                return self.create_response(request, {"message": error_message, "duplicate": 1},
-                                            response_class=HttpBadRequest)
+
+            u.save()
 
 
             # Now, will create user profile
