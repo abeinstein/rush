@@ -15,6 +15,7 @@ from rush_app.config import Codes
 
 RESOURCE_ROOT = 'rush_app.api.resources'
 
+# TODO: FUCKING CHANGE THE AUTHORIZATION!!!
 
 class FratResource(ModelResource):
     rushes = fields.ToManyField("%s.RushResource" % RESOURCE_ROOT, 'rush_set', full=True)
@@ -25,6 +26,7 @@ class FratResource(ModelResource):
     class Meta:
         queryset = Frat.objects.all()
         allowed_methods = ['get', 'post', 'patch', 'delete']
+        authorization = Authorization()
         filtering = {
             'name': ALL_WITH_RELATIONS,
             'chapter': ALL_WITH_RELATIONS,
