@@ -6,6 +6,7 @@ from django.conf.urls import url
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import check_password, make_password
+from django.db import IntegrityError
 from tastypie.http import HttpUnauthorized, HttpForbidden, HttpCreated, HttpAccepted, HttpBadRequest, HttpGone
 from tastypie.authorization import Authorization, DjangoAuthorization, Authorization
 from tastypie.authentication import BasicAuthentication
@@ -119,7 +120,7 @@ class UserProfileResource(ModelResource):
             if facebook_id:
                 try:
                     u = User.objects.create_user(facebook_id)
-                except User.IntegrityError:
+                except IntegrityError:
                     error_message = "User already exists"
                     return self.create_response(request, {"message": error_message, "duplicate": 1},
                                             response_class=HttpBadRequest)
@@ -127,7 +128,7 @@ class UserProfileResource(ModelResource):
                 # Note: we are using email as the username
                 try:
                     u = User.objects.create_user(email, email, password)
-                except User.IntegrityError:
+                except IntegrityError:
                     error_message = "User already exists"
                     return self.create_response(request, {"message": error_message, "duplicate": 1},
                                             response_class=HttpBadRequest)
