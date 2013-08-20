@@ -32,6 +32,32 @@ class FratResource(ModelResource):
             'chapter': ALL_WITH_RELATIONS,
         }
 
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/create/$" % 
+                self._meta.resource_name, self.wrap_view('create'), 
+                name="api_create_frat")
+        ]
+
+    def create(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        data = self.deserialize(request, request.body) 
+        name = data.get('name', '')
+        chapter = data.get('chapter', '')
+        university = data.get('university', '')
+        password = data.get('password', '')
+
+        try:
+            frat = Frat(name=name, chapter=chapter, university=university, password=password)
+            frat.save()
+            return self.create_response(request, {'id': frat.pk}, response_class=HttpCreated)
+        except:
+            error_message = "Frat could not be created"
+            return self.create_response(request, {'message': error_message}, 
+                                        response_class=HttpBadRequest)
+
+
+
 
 class RushResource(ModelResource):
     frat = fields.ForeignKey(FratResource, 'frat')
