@@ -147,7 +147,7 @@ class UserProfileResource(ModelResource):
             if facebook_id:
                 pro.facebook_id = facebook_id
             pro.save()
-            return self.create_response(request, {"id": pro.id }, response_class=HttpCreated)
+            return self.create_response(request, {"id": pro.pk }, response_class=HttpCreated)
         else:
             error_message = "Frat found, but invalid password"
             return self.create_response(request, 
