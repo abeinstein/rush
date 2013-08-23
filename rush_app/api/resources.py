@@ -57,8 +57,6 @@ class FratResource(ModelResource):
                                         response_class=HttpBadRequest)
 
 
-
-
 class RushResource(ModelResource):
     frat = fields.ForeignKey(FratResource, 'frat')
     #comments = fields.ToManyField('rush_app.api.resources.CommentResource', 'comment_set', related_name='rush', full=True)
@@ -234,7 +232,7 @@ class CommentResource(ModelResource):
 
         comment = Comment(body=body, rush=rush, userprofile=prof)
         comment.save()
-        return self.create_response(request, response_class=HttpCreated)
+        return self.create_response(request, {}, response_class=HttpCreated)
 
 
         
