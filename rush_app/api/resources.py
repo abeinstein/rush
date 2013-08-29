@@ -1,6 +1,5 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
-from rush_app.models import Rush, Frat, UserProfile, Comment
 from django.contrib.auth.models import User
 from django.conf.urls import url
 from django.contrib.auth import authenticate, login, logout
@@ -13,6 +12,7 @@ from tastypie.authorization import Authorization, DjangoAuthorization, Authoriza
 from tastypie.authentication import BasicAuthentication
 from tastypie.resources import ALL_WITH_RELATIONS
 from rush_app.config import Codes
+from rush_app.models import Rush, Frat, UserProfile, Comment, Reputation
 
 RESOURCE_ROOT = 'rush_app.api.resources'
 
@@ -190,12 +190,12 @@ class UserResource(ModelResource):
 
 class CommentResource(ModelResource):
     rush = fields.ToOneField(RushResource, 'rush')
-    profile = fields.ToOneField(UserProfileResource, 'userprofile')
+    profile = fields.ToOneField(UserProfileResource, 'userprofile', full=True)
 
     class Meta:
         queryset = Comment.objects.all()
         allowed_methods = ['get', 'post', 'delete']
-        authorization = DjangoAuthorization() 
+        authorization = Authorization() 
         filtering = {
             'rush': ALL_WITH_RELATIONS,
         }
@@ -239,7 +239,18 @@ class CommentResource(ModelResource):
         return self.create_response(request, {}, response_class=HttpCreated)
 
 
-        
+class ReputationResource(ModelResource):
+    rush = fields.ToOneField(RushResource, 'rush')
+    thumbsup_users = fields.ToManyField(UserProfileResource, 'thumbsup_users')
+    thumbsdown_users = fields.ToManyField(UserProfileResource, 'thumbsdown_users')
 
+    class Meta:
+        queryset = Reputation.objects.all()
+        allowed_methods = ['get', 'post']
+        authorization = Authorization()
+        filtering = {
+            'rush': ALL_WITH_RELATIONS,
+            'thumbsup_users': ALL_WITH_RELATIONS,
+        }
 
 
