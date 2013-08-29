@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import IntegrityError
+from django.http import HttpResponseRedirect
 from tastypie.http import HttpUnauthorized, HttpForbidden, HttpCreated, HttpAccepted, HttpBadRequest, HttpGone
 from tastypie.authorization import Authorization, DjangoAuthorization, Authorization
 from tastypie.authentication import BasicAuthentication
@@ -64,7 +65,7 @@ class RushResource(ModelResource):
     class Meta:
         queryset = Rush.objects.all()
         allowed_methods = ['get', 'post', 'patch', 'delete']
-        authorization = DjangoAuthorization()
+        authorization = Authorization()
 
 class UserProfileResource(ModelResource):
     user = fields.ToOneField("%s.UserResource" % RESOURCE_ROOT, 'user', full=True)
@@ -173,7 +174,7 @@ class UserProfileResource(ModelResource):
             if facebook_id:
                 pro.facebook_id = facebook_id
             pro.save()
-            return self.create_response(request, {"id": pro.pk }, response_class=HttpCreated)
+            return HttpResponseRedirect('/api/v1/profile/%s' % str(pro.pk))
         else:
             error_message = "Frat found, but invalid password"
             return self.create_response(request, 
@@ -195,6 +196,9 @@ class CommentResource(ModelResource):
         queryset = Comment.objects.all()
         allowed_methods = ['get', 'post', 'delete']
         authorization = DjangoAuthorization() 
+        filtering = {
+            'rush': ALL_WITH_RELATIONS,
+        }
 
     def prepend_urls(self):
         return [
