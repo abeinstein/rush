@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from tastypie.http import HttpUnauthorized, HttpForbidden, HttpCreated, HttpAccepted, HttpBadRequest, HttpGone
 from tastypie.authorization import Authorization, DjangoAuthorization, Authorization
 from tastypie.authentication import BasicAuthentication
-from tastypie.resources import ALL_WITH_RELATIONS
+from tastypie.resources import ALL, ALL_WITH_RELATIONS
 from rush_app.config import Codes
 from rush_app.models import Rush, Frat, UserProfile, Comment, Reputation
 
@@ -19,9 +19,9 @@ RESOURCE_ROOT = 'rush_app.api.resources'
 # TODO: FUCKING CHANGE THE AUTHORIZATION!!!
 
 class FratResource(ModelResource):
-    rushes = fields.ToManyField("%s.RushResource" % RESOURCE_ROOT, 'rush_set', full=True)
+    rushes = fields.ToManyField("%s.RushResource" % RESOURCE_ROOT, 'rush_set', full=True, related_name='frat')
     members = fields.ToManyField("%s.UserProfileResource" % RESOURCE_ROOT, 
-                                'userprofile_set', full=True)
+                                'userprofile_set', full=True, related_name='frat')
 
 
     class Meta:
@@ -29,8 +29,8 @@ class FratResource(ModelResource):
         allowed_methods = ['get', 'post', 'patch', 'delete']
         authorization = Authorization()
         filtering = {
-            'name': ALL_WITH_RELATIONS,
-            'chapter': ALL_WITH_RELATIONS,
+            'name': ALL,
+            'chapter': ALL,
         }
 
     def prepend_urls(self):
@@ -76,6 +76,7 @@ class UserProfileResource(ModelResource):
         resource_name = "profile"
         allowed_methods = ['get', 'post', 'patch']
         authorization = Authorization()
+        always_return_data = True
         #authentication = BasicAuthentication() 
 
     def dehydrate(self, bundle):
@@ -121,6 +122,18 @@ class UserProfileResource(ModelResource):
                 return self.create_response(request, {'is_verified': 0})
                 
 
+    # def obj_create(self, bundle, **kwargs):
+    #     email = bundle.data.get('email', '')
+    #     password = bundle.data.get('password', '')
+    #     facebook_id = bundle.data.get('facebook_id', '')
+    #     frat_name = bundle.data.get('frat_name', '')
+    #     frat_chapter = bundle.data.get('frat_chapter', '')
+    #     frat_password = bundle.data.get('frat_password', '')
+
+
+    #     return super(UserProfileResource).obj_create(bundle, **kwargs)
+
+    # TODO: Hook into native POST
     def create(self, request, **kwargs):
         self.method_check(request, allowed=['post'])
         data = self.deserialize(request, request.body)
@@ -174,7 +187,8 @@ class UserProfileResource(ModelResource):
             if facebook_id:
                 pro.facebook_id = facebook_id
             pro.save()
-            return HttpResponseRedirect('/api/v1/profile/%s' % str(pro.pk))
+
+            return self.get_detail(request, pk=pro.pk)
         else:
             error_message = "Frat found, but invalid password"
             return self.create_response(request, 
@@ -207,6 +221,7 @@ class CommentResource(ModelResource):
                 self.wrap_view('add'), name="api_add_comment"),
         ]
 
+    # TODO: Hook this onto native POST request
     def add(self, request, **kwargs):
         self.method_check(request, allowed=['post'])
         data = self.deserialize(request, request.body)

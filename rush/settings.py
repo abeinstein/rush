@@ -136,6 +136,9 @@ INSTALLED_APPS = (
     'south',
     'annoying',
     'tastypie',
+    'discover_runner',
+    'bootstrap_toolkit',
+    'tastypie_swagger',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -172,10 +175,16 @@ LOGIN_REDIRECT_URL = '/rushes/'
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/'
 
+# Testing Settings
+TEST_RUNNER = 'discover_runner.DiscoverRunner'
+
 # Deployment settings
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+
+dbconfig = dj_database_url.config()
+if dbconfig:
+    DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -193,5 +202,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+# API documentation
+TASTYPIE_SWAGGER_API_MODULE = 'rush.urls.v1_api'
 
 

@@ -4,7 +4,7 @@ from rush_app.views import all_frats, show_frat
 from django.contrib.auth.views import login, logout
 from tastypie.api import Api
 from rush_app.api.resources import RushResource, CommentResource, FratResource
-from rush_app.api.resources import UserProfileResource, UserResource
+from rush_app.api.resources import UserProfileResource, UserResource, ReputationResource
 
 admin.autodiscover()
 v1_api = Api(api_name='v1')
@@ -13,6 +13,8 @@ v1_api.register(CommentResource())
 v1_api.register(FratResource())
 v1_api.register(UserProfileResource())
 v1_api.register(UserResource())
+v1_api.register(ReputationResource())
+
 
 urlpatterns = patterns('',
     # Examples:
@@ -29,4 +31,5 @@ urlpatterns = patterns('',
     url(r'^logout/', logout, {'next_page': '/'}, name="logout"),
     url(r'^comments/', include('django.contrib.comments.urls')),
     url(r'^api/', include(v1_api.urls)),
+    url(r'^api/doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger')),
 )
