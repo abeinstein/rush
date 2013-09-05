@@ -14,10 +14,10 @@
                     {% for rush in frat.rush_set.all %}
                     <tr>
                         <td> 
-                            <div class="rush-row" id="{{ rush }}">
+                            <div class="rush-row" id="rush-{{forloop.counter}}">
                                 <img src="{{ rush.picture }}" class="rush-image img-responsive img-thumbnail"> 
                                 <p class="rush-name"> {{ rush }}</p>
-                                <p class="num-comments"> 4 comments </p>
+                                <p class="num-comments"> {{ rush.comment_set.count }} comments </p>
                             </div> <!-- rush-row -->
 
                         </td>
@@ -30,9 +30,9 @@
                 {% for rush in frat.rush_set.all %}
                 
                 {% if forloop.first %}
-                <div class="rush-profile active" id="profile-{{ forloop.counter }}">
+                <div class="rush-profile active" id="rush-{{ forloop.counter }}-profile">
                 {% else %}
-                <div class="rush-profile" id="profile-{{ forloop.counter }}">
+                <div class="rush-profile" id="rush-{{ forloop.counter }}-profile">
                 {% endif %}
                     <div class="row">
                         <div class="col-lg-6">
@@ -41,10 +41,20 @@
                         <div class="col-lg-6">
                             <div class="rush-info">
                                 <h2 class="active-rush-name"> {{ rush }}</h2>
-                                <p> Greenwich, CT <i class="icon-globe icon-large"> </i> </p> 
-                                <p> 203-313-4070 <i class="icon-phone icon-large"> </i> </p>
-                                <p> andrew.beinstein@gmail.com <i class="icon-envelope icon-large"> </i></p>
-                                <p> South Campus <i class="icon-home icon-large"> </i> </p>
+                                <ul class="list-group">
+
+                                {% if rush.hometown %}
+                                <p> {{ rush.hometown }} <i class="icon-globe icon-large"> </i> </p> 
+                                {% endif %}
+                                {% if rush.phone_number %}
+                                <p> {{ rush.phone_number }}<i class="icon-phone icon-large"> </i> </p>
+                                {% endif %}
+                                {% if rush.email %}
+                                <p> {{ rush.email }}<i class="icon-envelope icon-large"> </i></p>
+                                {% endif %}
+                                {% if rush.dorm %}
+                                <p> {{ rush.dorm }} <i class="icon-home icon-large"> </i> </p>
+                                {% endif %}
                             </div> <!-- rush-info -->
                         </div> <!-- col-lg-6 -->
                     </div> <!-- row -->
