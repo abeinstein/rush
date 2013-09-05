@@ -57,7 +57,7 @@ class UserProfile(models.Model):
 	user = AutoOneToOneField(User, primary_key=True)
 	frat = models.ForeignKey(Frat)
 	is_admin = models.BooleanField(default=False)
-	facebook_id = models.CharField(unique=True, max_length=50, null=True)
+	facebook_id = models.CharField(unique=True, max_length=50, null=True, blank=True)
 
 	def __unicode__(self):
 		return self.user.username

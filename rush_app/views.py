@@ -46,7 +46,7 @@ def all_frats(request):
         frat_id = request.user.userprofile.frat.id
         return show_frat(request, frat_id)
 
-def show_frat(request, frat_id):
+def show_frat(request, frat_id, active_rush=''):
     if (request.user.is_authenticated() and 
             request.user.userprofile.frat.id == int(frat_id)):
         frat = Frat.objects.get(pk=frat_id)
@@ -55,8 +55,13 @@ def show_frat(request, frat_id):
         # for r in frat.rush_set.all():
         #     print r.id
         #     forms[r.id] = CommentForm()
+        rushes = frat.rush_set.all()
+        if not active_rush:
+            active_rush = rushes[0]
 
-        return render(request, 'frat_page.html', {'frat': frat, 'form': form})
+        params = {'frat': frat, 'form': form, 'rushes': rushes, 'active_rush': active_rush}
+
+        return render(request, 'frat_page.html', params)
     else:
         return redirect_to_login(request.path)
 
@@ -85,8 +90,9 @@ def add_comment(request, rush_pk, user_pk):
         comment = Comment(rush=rush, userprofile=prof)
         cf = CommentForm(p, instance=comment)
         cf.save()
-    return HttpResponseRedirect(reverse('rush_app.views.show_frat', 
-        args=[request.user.userprofile.frat.id]))
+    return show_frat(request, request.user.userprofile.frat.id, active_rush=rush)
+    # return HttpResponseRedirect(reverse('rush_app.views.show_frat', 
+    #     args=(request.user.userprofile.frat.id, rush)))
 
 
 

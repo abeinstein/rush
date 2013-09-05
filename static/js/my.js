@@ -6,7 +6,7 @@ $(document).ready(function(){
 
     $('.rush-row').click(function(){
         // First, find out which row it 
-        var $rush = $(this).attr('id');
+        var $rush = $(this).find("td div").attr('id');
         var $profile = $("#" + $rush + "-profile"); // TODO: This is ghetto
         $profile.toggleClass('active');
         $displayed_profile.toggleClass('active');

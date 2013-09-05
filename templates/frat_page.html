@@ -11,10 +11,10 @@
             <div class="col-lg-6">
                 <table class="table table-hover table-enlarged">
                     <tbody>
-                    {% for rush in frat.rush_set.all %}
-                    <tr>
+                    {% for rush in rushes %}
+                    <tr class="rush-row">
                         <td> 
-                            <div class="rush-row" id="rush-{{forloop.counter}}">
+                            <div id="rush-{{forloop.counter}}">
                                 <img src="{{ rush.picture }}" class="rush-image img-responsive img-thumbnail"> 
                                 <p class="rush-name"> {{ rush }}</p>
                                 <p class="num-comments"> {{ rush.comment_set.count }} comments </p>
@@ -27,9 +27,9 @@
                 </table>
             </div>
             <div class="col-lg-6" id="profile-container">
-                {% for rush in frat.rush_set.all %}
+                {% for rush in rushes %}
                 
-                {% if forloop.first %}
+                {% if rush.pk == active_rush.pk %}
                 <div class="rush-profile active" id="rush-{{ forloop.counter }}-profile">
                 {% else %}
                 <div class="rush-profile" id="rush-{{ forloop.counter }}-profile">
