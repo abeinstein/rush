@@ -4,6 +4,17 @@
 
 {% block title %}{{ frat.name }}{% endblock %}
 
+{% block navbar-rushlist %}
+        
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav navbar-rushes">
+            {% for rush in rushes %}
+            <li class="navbar-rush" id="rush-{{forloop.counter}}"><a href="#"><span class="navbar-rush">{{ rush }}</span></a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+{% endblock navbar-rushlist %}
 {% block content %}
 <div class="container">
     <div class="starter-template">

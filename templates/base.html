@@ -47,14 +47,8 @@
             {% endif %}
         </div>
 
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-          <ul class="nav navbar-nav navbar-rushes">
-            <li><a href="#"><span class="navbar-rush">Andrew Beinstein</span></a></li>
-            <li><a href="#"><span class="navbar-rush">Adam Gluck</span></a></li>
-            <li><a href="#"><span class="navbar-rush">Mike Warren</span></a></li>
-          </ul>
-
-        </div>
+        {% block navbar-rushlist %}
+        {% endblock navbar-rushlist %}
       </nav>
         {% endblock navbar %}
 

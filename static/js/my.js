@@ -13,4 +13,14 @@ $(document).ready(function(){
         $displayed_profile = $profile;
 
     });
+
+    $('.navbar-rush').click(function(){
+        // First, find out which row it 
+        console.log("navbar rush clicked")
+        var $rush = $(this).attr('id');
+        var $profile = $("#" + $rush + "-profile"); // TODO: This is ghetto
+        $profile.toggleClass('active');
+        $displayed_profile.toggleClass('active');
+        $displayed_profile = $profile;
+    });
 });
