@@ -5,29 +5,83 @@
 {% block title %}{{ frat.name }}{% endblock %}
 
 {% block content %}
-<h1>{{ frat.name }} -- {{ frat.chapter}} Chapter</h1>
-<ul>
-{% for rush in frat.rush_set.all %}
-<li>{{rush}} 
-<a href="{% url 'thumbs' 1 user.id rush.id %}">Thumbs Up</a> {{ rush.reputation.thumbsup}}
-<a href="{% url 'thumbs' 0 user.id rush.id %}">Thumbs Down</a> {{rush.reputation.thumbsdown}}
-</li>
-Comments:
-{% for comment in rush.comment_set.all %}
-<p>{{ comment.userprofile.user }} says: {{ comment.body }}<p>
-{% endfor %}
-Post a comment:
-{% if user.is_authenticated %}
-<form action="{% url 'add_comment' rush.pk user.userprofile.pk %}" method="POST">
-    {% csrf_token %}
-    <p>{{ form.as_p }}</p>
-    <input type="submit" value="Post Comment">
-</form>
+<div class="container">
+    <div class="starter-template">
+        <div class="row">
+            <div class="col-lg-6">
+                <table class="table table-hover table-enlarged">
+                    <tbody>
+                    {% for rush in frat.rush_set.all %}
+                    <tr>
+                        <td> 
+                            <div class="rush-row" id="{{ rush }}">
+                                <img src="{{ rush.picture }}" class="rush-image img-responsive img-thumbnail"> 
+                                <p class="rush-name"> {{ rush }}</p>
+                                <p class="num-comments"> 4 comments </p>
+                            </div> <!-- rush-row -->
 
-{% else %}
-    <p>Please <a href="{% url 'auth_login' %}">log in</a> to leave a comment.</p>
-{% endif %}
-{% endfor %}
-</ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-6" id="profile-container">
+                {% for rush in frat.rush_set.all %}
+                
+                {% if forloop.first %}
+                <div class="rush-profile active" id="profile-{{ forloop.counter }}">
+                {% else %}
+                <div class="rush-profile" id="profile-{{ forloop.counter }}">
+                {% endif %}
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <img class="rush-profile-image img-responsive" src="{{ rush.picture }}">
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="rush-info">
+                                <h2 class="active-rush-name"> {{ rush }}</h2>
+                                <p> Greenwich, CT <i class="icon-globe icon-large"> </i> </p> 
+                                <p> 203-313-4070 <i class="icon-phone icon-large"> </i> </p>
+                                <p> andrew.beinstein@gmail.com <i class="icon-envelope icon-large"> </i></p>
+                                <p> South Campus <i class="icon-home icon-large"> </i> </p>
+                            </div> <!-- rush-info -->
+                        </div> <!-- col-lg-6 -->
+                    </div> <!-- row -->
+                    <div class="row">
+                        <div class="comments">
+                            {% for comment in rush.comment_set.all %}
+                            <div class="right-comment"> 
+                                <div class="right-comment-text">{{ comment.body }}</div>
+                                <div class="comment-name"> {{ comment.userprofile.user }} </div>
+                            </div> <!-- right-comment -->
+                            {% endfor %}
+                        </div> <!-- comments -->
+                    </div> <!-- row -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="comment-form">
+                                {% if user.is_authenticated %}
+                                <form action="{% url 'add_comment' rush.pk user.userprofile.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <div class="input-group">
+                                        <textarea class="form-control" rows="3" name="body" placeholder="Add comment..."></textarea>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-lg post-comment-btn" type="submit">Post!</button>
+                                        </span>
+                                    </div> <!-- input-group -->
+                                </form>
+                                {% else %}
+                                    <p>Please <a href="{% url 'auth_login' %}">log in</a> to leave a comment.</p>
+                                {% endif %}
+                            </div> <!-- comment-form -->
+                        </div> <!-- col-lg-12 -->
+                    </div> <!-- row -->
+                </div>  <!-- rush-profile -->  
+                {% endfor %}       
+            </div> <!-- col-lg-6 -->
+        </div> <!-- row -->
+    </div> <!-- starter-template -->
+</div> <!-- container -->
 
-{% endblock %}
+{% endblock content %}

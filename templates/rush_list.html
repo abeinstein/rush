@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %} {{ frat.name }} {% endblock title %}
+
+{% block content %}
+<h1> Rush: Go Greek </h1>
+{% for object in object_list %}
+<h2>{{object.first_name}} {{object.last_name}}</h2>
+
+{% endfor %}
+
+{% endblock content %}

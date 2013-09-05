@@ -1,0 +1,229 @@
+body {
+  padding-top: 50px;
+  background-color: rgb(233, 233, 233);
+
+}
+
+/* Nav bar */
+#logo {
+    font-family: 'Open Sans', sans-serif;
+    color: white;
+    display: inline;
+}
+
+#lines-button {
+    display: inline;
+}
+
+.navbar {
+    background-color: rgb(18, 27, 92);
+}
+
+.navbar-rush {
+    font: 'Merriweather', serif;
+    color: white;
+}
+
+.container {
+    max-width: none;
+}
+
+.starter-template {
+  padding: 30px 15px;
+  text-align: center;
+  font-family: 'Merriweather', serif;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: 'Merriweather', serif;
+}
+
+textarea {
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+/*.row {
+    margin-top: -30px;
+    width: 100%;
+}*/
+
+/* Rush Table */
+.table-enlarged thead > tr > th,
+.table-enlarged tbody > tr > th,
+.table-enlarged tfoot > tr > th,
+.table-enlarged thead > tr > td,
+.table-enlarged tbody > tr > td,
+.table-enlarged tfoot > tr > td {
+  padding: 10px;
+}
+
+table {
+    border-right: 1px solid gray;
+    margin: -10px;
+    max-width: 100%;
+}
+
+
+.rush-image {
+    width: 75px;
+    height: 75px;
+    float: left;
+}
+
+.rush-name {
+    font-size: 150%;
+    padding: 10px 10px 0 10px;
+}
+
+/* Rush Profile */
+
+
+/*.profile-container {
+    position: absolute;
+    overflow: hidden;
+}*/
+
+/* Make first profile visible, all others hidden */
+.rush-profile {
+    display: none;
+    left: 0;
+    right: 0;
+    max-height: 100%;
+    top: 0;
+    bottom: 0;
+}
+
+/*.rush-profile-image {
+    max-width: 40%;
+    margin: 80px 10px 0 20px;
+    float: left;
+    border-radius: 50%;
+}*/
+
+.rush-info h2 {
+    text-align: right;
+    padding-bottom: 15px;
+
+}
+
+.rush-info p {
+    text-align: right;
+
+}
+
+p > i {
+    float: left;
+    padding-right: 15px;
+}
+
+
+
+.active {
+    display: inline;
+}
+
+
+/* Comments */
+.comments {
+    width: 100%;
+    font-size: 15px;
+    padding: 30px 10px 10px 30px;
+}
+
+
+.comment-thumb {
+    width: 50px;
+    height: auto;
+    float: right;
+    position: relative;
+}
+
+
+.right-comment, .left-comment {
+    margin-top: 3px;
+    padding: 10px;
+    max-width: 80%;
+    clear: both; 
+    border: 1px solid gray;
+    background-color: white;
+    display: inline-block;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+.right-comment {
+    float: right;
+    text-align: right;
+    margin-left: auto;
+    -webkit-border-radius: 5px 5px 0 5px;
+    -moz-border-radius: 5px 5px 0 5px;
+    -o-border-radius: 5px 5px 0 5px;
+    -ms-border-radius: 5px 5px 0 5px;
+    border-radius: 5px 5px 0 5;
+
+    
+}
+
+.left-comment {
+    float: left;
+    text-align: left;
+    margin-right: auto;
+    -webkit-border-radius: 5px 5px 5px 0;
+    -moz-border-radius: 5px 5px 5px 0;
+    -o-border-radius: 5px 5px 5px 0;
+    -ms-border-radius: 5px 5px 5px 0;
+    border-radius: 5px 5px 5px 0;
+}
+
+.comment-name {
+    color: rgb(18, 27, 92);
+    text-decoration: bold;
+    font-size: 10px;
+}
+
+/*#comment-text-area {
+    position: relative;
+    top: 10px;
+    width: 75%;
+    clear: both;
+    float: left;
+}*/
+
+/*.comment-form button {
+    display: inline-block;
+}*/
+
+.comment-form {
+    margin-top: 2em;
+}
+
+.post-comment-btn {
+    padding: 24px 24px;
+    border-radius: 0;
+    background-color: rgb(18, 27, 92);
+    color: white;
+}
+
+/* Let's be responsive!! */
+@media screen and (max-width:699px) {
+    .table-enlarged {
+        display: none;
+    }
+
+    #lines-button {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 700px) {
+    .navbar-rushes {
+        display: none;
+    }
+}
+
+
+
+
+
+
