@@ -268,4 +268,66 @@ class ReputationResource(ModelResource):
             'thumbsup_users': ALL_WITH_RELATIONS,
         }
 
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/endorse/$" % 
+                self._meta.resource_name, self.wrap_view('endorse'), 
+                name="api_endorse"),
+            url(r"^(?P<resource_name>%s)/unendorse/$" % 
+                self._meta.resource_name, self.wrap_view('unendorse'), 
+                name="api_unendorse")
+        ]
+
+    # TODO: DRY violation. Figure out how to use view
+    def endorse(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        data = self.deserialize(request, request.body) 
+        rush_id = data.get('rush', '')
+        profile_id = data.get('user', '')
+
+        if not (rush_id and profile_id):
+            msg = "Please provide 'rush' field and 'user' field."
+            return self.create_response(request, {'message': msg}, response_class=HttpBadRequest)
+
+        try:
+            rush = Rush.objects.get(pk=int(rush_id))
+            profile = UserProfile.objects.get(pk=int(profile_id))
+            reputation = Reputation.objects.get(rush=rush)
+        except ObjectDoesNotExist:
+            msg = "Rush or User does not exist"
+            return self.create_response(request, {'message': msg}, response_class=HttpBadRequest)
+
+        reputation.thumbsup_users.add(profile)
+        reputation.save()
+        rush.save()
+
+        return self.create_response(request, {'message': 'Success'})
+
+    def unendorse(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        data = self.deserialize(request, request.body) 
+        rush_id = data.get('rush', '')
+        profile_id = data.get('user', '')
+
+        if not (rush_id and profile_id):
+            msg = "Please provide 'rush' field and 'user' field."
+            return self.create_response(request, {'message': msg}, response_class=HttpBadRequest)
+
+        try:
+            rush = Rush.objects.get(pk=int(rush_id))
+            profile = UserProfile.objects.get(pk=int(profile_id))
+        except ObjectDoesNotExist:
+            msg = "Rush or User does not exist"
+            return self.create_response(request, {'message': msg}, response_class=HttpBadRequest)
+
+        rush.reputation.thumbsup_users.remove(profile)
+        rush.reputation.save()
+
+        return self.create_response(request, {'message': 'Success'})
+
+
+
+
+
+
 

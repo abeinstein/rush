@@ -137,7 +137,7 @@ INSTALLED_APPS = (
     'annoying',
     'tastypie',
     'discover_runner',
-    'bootstrap_toolkit',
+    # 'bootstrap_toolkit',
     'tastypie_swagger',
 )
 
@@ -192,15 +192,15 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
 
-# Static asset configuration
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/static/'
+# # Static asset configuration
+# import os
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# STATIC_ROOT = 'staticfiles'
+# STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 
 # API documentation
 TASTYPIE_SWAGGER_API_MODULE = 'rush.urls.v1_api'

@@ -3,7 +3,29 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
 from django.http import HttpResponseRedirect
-from rush_app.models import Frat, User, Rush, Comment, CommentForm, UserProfile
+from django.views.generic import ListView
+
+from .models import Frat, User, Rush, Comment, CommentForm, UserProfile
+
+
+# class RushListView(ListView):
+#     ''' Main view (list of rushes) '''
+#     model = Rush
+#     template_name="rush_list.html"
+
+#     def get_context_data(self, **kwargs):
+#         context = super(RushListView, self).get_context_data(**kwargs)
+#         context["frat"] = self.request.user.userprofile.frat
+#         return context
+
+#     def get_queryset(self):
+#         queryset = super(RushListView, self).get_queryset()
+#         my_frat = self.request.user.userprofile.frat
+#         return queryset.filter(frat__pk=my_frat.pk)
+
+
+
+# Function based views (will delete all of these soon!!)
 
 def index(request):
     return render(request, 'index.html')

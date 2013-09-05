@@ -1,4 +1,3 @@
-import json
 from django.contrib.auth.models import User
 
 from tastypie.test import ResourceTestCase
@@ -21,6 +20,11 @@ class TastypieTest(ResourceTestCase):
         self.user = User.objects.create_user('andrew', "andrew@email.com", 'profilepassword')
         self.profile = UserProfile(user=self.user, is_admin=False, frat=self.frat)
         self.profile.save()
+
+        # Create another user/userprofile
+        self.user2 = User.objects.create_user('adam', "adam@email.com", 'adampassword')
+        self.profile2 = UserProfile(user=self.user2, is_admin=False, frat=self.frat)
+        self.profile2.save()
 
         rush_info = {"first_name": "Brett",
                     "last_name": "Parket", 
@@ -131,7 +135,35 @@ class TastypieTest(ResourceTestCase):
         ''' Tests GET /api/v1/reputation/ '''
         response = self.api_client.get('/api/v1/reputation/')
         self.assertValidJSONResponse(response)
+
+    def test_thumbs_up(self):
+        ''' Tests thumbs up functionality '''
+        old_thumbsup = self.reputation.thumbsup
+        old_thumbsup_users = self.reputation.thumbsup_users
+
+        data = {"rush": self.rush.pk, 
+                "user": self.profile2.pk}
+
+        response = self.api_client.post('/api/v1/reputation/endorse/', data=data)
+        self.reputation.save()
+
+        self.assertValidJSONResponse(response)
+
+        old_thumbsup_users.add(self.profile2)
+        self.assertListEqual(list(self.reputation.thumbsup_users.all()), list(old_thumbsup_users.all()))
+        self.assertEqual(self.reputation.thumbsup, old_thumbsup + 1)
         
+        response = self.api_client.post('/api/v1/reputation/unendorse/', data=data)
+        self.reputation.save()
+
+        self.assertEqual(self.reputation.thumbsup, old_thumbsup)
+        self.assertListEqual(list(self.reputation.thumbsup_users.all()), list(old_thumbsup_users.all()))
+
+
+
+
+    
+
 
 
 

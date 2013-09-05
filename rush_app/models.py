@@ -66,8 +66,8 @@ class UserProfile(models.Model):
 class Reputation(models.Model):
 	'''Encapsulates thumbs up/ thumbs down for each rush'''
 	rush = AutoOneToOneField(Rush, primary_key=True)
-	thumbsup_users = models.ManyToManyField(UserProfile, related_name='tu+')
-	thumbsdown_users = models.ManyToManyField(UserProfile, related_name='td+')
+	thumbsup_users = models.ManyToManyField(UserProfile, related_name='tu+', blank=True, null=True)
+	thumbsdown_users = models.ManyToManyField(UserProfile, related_name='td+', blank=True, null=True)
 	thumbsup = models.IntegerField(default=0)
 	thumbsdown = models.IntegerField(default=0)
 
