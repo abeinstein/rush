@@ -5,12 +5,6 @@ body {
 }
 
 /* Nav bar */
-#logo {
-    font-family: 'Open Sans', sans-serif;
-    color: white;
-    display: inline;
-}
-
 #lines-button {
     display: inline;
 }
@@ -24,12 +18,25 @@ body {
     color: white;
 }
 
+/* overriding text navbar color */
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+.navbar-default .navbar-text {
+    color: white;
+}
+
+.navbar-logo {
+    font-family: 'Open Sans', sans-serif;    
+}
+
 .container {
     max-width: none;
 }
 
 .starter-template {
-  padding: 30px 15px;
+  padding: 15px 15px;
   text-align: center;
   font-family: 'Merriweather', serif;
 }
@@ -95,10 +102,11 @@ table {
 }
 
 /*.rush-profile-image {
-    max-width: 40%;
-    margin: 80px 10px 0 20px;
-    float: left;
-    border-radius: 50%;
+    height: 50%;  to ensure non-square images don't mess up page 
+}
+
+.rush-profile-image img {
+    height: 50%;
 }*/
 
 .rush-info h2 {

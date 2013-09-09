@@ -5,14 +5,20 @@
 {% block title %}{{ frat.name }}{% endblock %}
 
 {% block navbar-rushlist %}
-        
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-          <ul class="nav navbar-nav navbar-rushes">
-            {% for rush in rushes %}
-            <li class="navbar-rush" id="rush-{{forloop.counter}}"><a href="#"><span class="navbar-rush">{{ rush }}</span></a></li>
-            {% endfor %}
-          </ul>
-        </div>
+    <ul class="nav navbar-nav">
+        <li><a href="/">See rushes</a></li>
+        <li><a href="{% url "add_rush" %}">Add a rush</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-rushes">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Rushes <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                {% for rush in rushes %}
+                <li class="navbar-rush" id="rush-{{forloop.counter}}"><a href="#"><span class="navbar-rush">{{ rush }}</span></a></li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
 
 {% endblock navbar-rushlist %}
 {% block content %}
@@ -45,15 +51,15 @@
                 {% else %}
                 <div class="rush-profile" id="rush-{{ forloop.counter }}-profile">
                 {% endif %}
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <img class="rush-profile-image img-responsive" src="{{ rush.picture }}">
+                    <div class="row well">
+                        <div class="col-lg-6 rush-profile-image">
+                            <img class="img-responsive" src="{{ rush.picture }}">
                         </div>
                         <div class="col-lg-6">
                             <div class="rush-info">
                                 <h2 class="active-rush-name"> {{ rush }}</h2>
                                 <ul class="list-group">
-
+                                <p> {{ rush.reputation.thumbsup }} endorsement{{ rush.reputation.thumbsup|pluralize }} <i class="icon-thumbs-up icon-large"></i></p>
                                 {% if rush.hometown %}
                                 <p> {{ rush.hometown }} <i class="icon-globe icon-large"> </i> </p> 
                                 {% endif %}
@@ -67,15 +73,28 @@
                                 <p> {{ rush.dorm }} <i class="icon-home icon-large"> </i> </p>
                                 {% endif %}
                             </div> <!-- rush-info -->
+                            <div class="rush-control">
+                                <a class="btn btn-success btn-large btn-block" href="/">Endorse</a>
+                                <a class="btn btn-primary btn-block" href="{% url 'edit_rush' rush.pk %}">Edit</a>
+                                <a class="btn btn-danger btn-block" href="{% url 'delete_rush' rush.pk %}">Delete</a>
+                            </div> <!-- rush-control -->
                         </div> <!-- col-lg-6 -->
                     </div> <!-- row -->
                     <div class="row">
                         <div class="comments">
                             {% for comment in rush.comment_set.all %}
+                            {% if comment.userprofile.pk == user.userprofile.pk %}
+
                             <div class="right-comment"> 
                                 <div class="right-comment-text">{{ comment.body }}</div>
                                 <div class="comment-name"> {{ comment.userprofile.user }} </div>
                             </div> <!-- right-comment -->
+                            {% else %}
+                            <div class="left-comment">
+                                <div class="left-comment-text">{{ comment.body }}</div>
+                                <div class="comment-name"> {{ comment.userprofile.user }} </div>
+                            </div>
+                            {% endif %}
                             {% endfor %}
                         </div> <!-- comments -->
                     </div> <!-- row -->

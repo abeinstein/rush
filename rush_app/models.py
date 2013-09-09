@@ -13,20 +13,21 @@ class Rush(models.Model):
 	phone_number = models.CharField(max_length=15, blank=True)
 	email = models.EmailField(blank=True)
 	bid = models.BooleanField(default=False)
-	picture = models.URLField(blank=True) # URL to picture image
 	last_commented = models.DateTimeField(blank=True, null=True)
 	notes = models.TextField(blank=True)
 	frat = models.ForeignKey('Frat')
 	dorm = models.CharField(max_length=50, blank=True)
 	hometown = models.CharField(max_length=100, blank=True)
+	picture = models.ImageField(upload_to="img", blank=True)
 
 
 	def __unicode__(self):
 		return self.first_name + " " + self.last_name
 
 	def save(self, *args, **kwargs):
-		#self.reputation.save()
 		super(Rush, self).save(*args, **kwargs)
+
+
 
 
 class Frat(models.Model):

@@ -292,7 +292,7 @@ class ReputationResource(ModelResource):
         try:
             rush = Rush.objects.get(pk=int(rush_id))
             profile = UserProfile.objects.get(pk=int(profile_id))
-            reputation = Reputation.objects.get(rush=rush)
+            reputation = rush.reputation
         except ObjectDoesNotExist:
             msg = "Rush or User does not exist"
             return self.create_response(request, {'message': msg}, response_class=HttpBadRequest)

@@ -3,9 +3,10 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from .models import Frat, User, Rush, Comment, CommentForm, UserProfile
+from .forms import RushCreateForm
 
 
 # class RushListView(ListView):
@@ -24,8 +25,42 @@ from .models import Frat, User, Rush, Comment, CommentForm, UserProfile
 #         return queryset.filter(frat__pk=my_frat.pk)
 
 
+# Class based views
+class RushCreateView(CreateView):
+    model = Rush
+    template_name = "rush_app/add_rush.html"
 
-# Function based views (will delete all of these soon!!)
+    def form_valid(self, form):
+        form.instance.frat = self.request.user.userprofile.frat
+        return super(RushCreateView, self).form_valid(form)
+
+    def get_form_class(self):
+        return RushCreateForm
+
+    def get_success_url(self):
+        return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
+
+class RushUpdateView(UpdateView):
+    model = Rush
+    template_name = "rush_app/edit_rush.html"
+
+    def get_form_class(self):
+        return RushCreateForm
+
+    def get_success_url(self):
+        return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
+
+class RushDeleteView(DeleteView):
+    model = Rush
+
+    def get_success_url(self):
+        return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
+
+
+
+
+
+# Function based views TODO: Rewrite into class-based views
 
 def index(request):
     return render(request, 'index.html')
