@@ -6,13 +6,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from tastypie.http import HttpUnauthorized, HttpForbidden, HttpCreated, HttpAccepted, HttpBadRequest, HttpGone
 from tastypie.authorization import Authorization, DjangoAuthorization, Authorization
 from tastypie.authentication import BasicAuthentication
 from tastypie.resources import ALL, ALL_WITH_RELATIONS
 from rush_app.config import Codes
 from rush_app.models import Rush, Frat, UserProfile, Comment, Reputation
+import json
 
 RESOURCE_ROOT = 'rush_app.api.resources'
 
@@ -67,6 +68,13 @@ class RushResource(ModelResource):
         allowed_methods = ['get', 'post', 'patch', 'delete']
         authorization = Authorization()
 
+# class CustomJSONSerializer(Serializer):
+#     def from_json(self, content):
+#         data = json.loads(content)
+
+#         if 'is_admin' in data:
+#             print data['is_admin']
+
 class UserProfileResource(ModelResource):
     user = fields.ToOneField("%s.UserResource" % RESOURCE_ROOT, 'user', full=True)
     frat = fields.ForeignKey(FratResource, 'frat')
@@ -74,7 +82,7 @@ class UserProfileResource(ModelResource):
     class Meta:
         queryset = UserProfile.objects.all()
         resource_name = "profile"
-        allowed_methods = ['get', 'post', 'patch']
+        allowed_methods = ['get', 'post', 'patch', 'put']
         authorization = Authorization()
         always_return_data = True
         #authentication = BasicAuthentication() 
@@ -89,6 +97,12 @@ class UserProfileResource(ModelResource):
         del bundle.data['user']
         return bundle
 
+    # def hydrate_is_admin(self, bundle):
+    #     if 'is_admin' in bundle.data:
+    #         # import pdb; pdb.set_trace()
+    #         bundle.obj.is_admin = eval(bundle.data['is_admin'])
+    #         bundle.obj.save()
+    #     return bundle
 
     def prepend_urls(self):
         return [
@@ -101,6 +115,9 @@ class UserProfileResource(ModelResource):
             url(r"^(?P<resource_name>%s)/create/$" %
                 self._meta.resource_name,
                 self.wrap_view('create'), name="api_create"),
+            url(r"^(?P<resource_name>%s)/(?P<id>\d+)/toggle_admin/$" %
+                self._meta.resource_name,
+                self.wrap_view('toggle_admin'), name="api_toggle_admin"),
         ]
 
     def sign_in(self, request, **kwargs):
@@ -122,18 +139,9 @@ class UserProfileResource(ModelResource):
                 return self.create_response(request, {'is_verified': 0})
                 
 
-    # def obj_create(self, bundle, **kwargs):
-    #     email = bundle.data.get('email', '')
-    #     password = bundle.data.get('password', '')
-    #     facebook_id = bundle.data.get('facebook_id', '')
-    #     frat_name = bundle.data.get('frat_name', '')
-    #     frat_chapter = bundle.data.get('frat_chapter', '')
-    #     frat_password = bundle.data.get('frat_password', '')
-
-
-    #     return super(UserProfileResource).obj_create(bundle, **kwargs)
-
-    # TODO: Hook into native POST
+    # TODO: Hook into native tastypie 
+    # TODO: Clean up code. Spagetti code!!
+    # TODO: Hopefully my code never gets any wore
     def create(self, request, **kwargs):
         self.method_check(request, allowed=['post'])
         data = self.deserialize(request, request.body)
@@ -144,6 +152,9 @@ class UserProfileResource(ModelResource):
         frat_name = data.get('frat_name', '')
         frat_chapter = data.get('frat_chapter', '')
         frat_password = data.get('frat_password', '')
+        is_admin = data.get('is_admin', '')
+        first_name = data.get('first_name', '')
+        last_name = data.get('last_name', '')
 
         # Check if the frat exists
         try:
@@ -178,22 +189,39 @@ class UserProfileResource(ModelResource):
                                             {"message": error_message},
                                             response_class=HttpBadRequest
                                             )
-
+            u.first_name = first_name
+            u.last_name = last_name
             u.save()
-
 
             # Now, will create user profile
             pro = UserProfile(user=u, frat=frat)
-            if facebook_id:
-                pro.facebook_id = facebook_id
+            pro.facebook_id = facebook_id
+            pro.is_admin = eval(is_admin)
             pro.save()
 
-            return self.get_detail(request, pk=pro.pk)
+            # The horror! The horror!
+            return self.create_response(request, json.loads(self.get_detail(request, pk=pro.pk).content))
         else:
             error_message = "Frat found, but invalid password"
             return self.create_response(request, 
                                         {"message": error_message},
                                         response_class=HttpBadRequest)
+
+    def toggle_admin(self, request, **kwargs):
+        self.method_check(request, allowed=['patch', 'put'])
+            
+        try:
+            pro = UserProfile.objects.get(pk=kwargs['id'])
+        except ObjectDoesNotExist: 
+            return self.create_response(request, {"message": "Profile doesn't exist"}, 
+                                        response_class=HttpBadRequest)
+
+        pro.is_admin = not pro.is_admin
+        pro.save()
+
+        return self.create_response(request, json.loads(self.get_detail(request, pk=pro.pk).content))
+
+
 
 
 

@@ -19,11 +19,12 @@ class TastypieTest(ResourceTestCase):
         # Create a user/userprofile
         self.user = User.objects.create_user('andrew', "andrew@email.com", 'profilepassword')
         self.profile = UserProfile(user=self.user, is_admin=False, frat=self.frat)
+        self.profile.frat.save()
         self.profile.save()
 
         # Create another user/userprofile
         self.user2 = User.objects.create_user('adam', "adam@email.com", 'adampassword')
-        self.profile2 = UserProfile(user=self.user2, is_admin=False, frat=self.frat)
+        self.profile2 = UserProfile(user=self.user2, is_admin=True, frat=self.frat)
         self.profile2.save()
 
         rush_info = {"first_name": "Brett",
@@ -69,13 +70,32 @@ class TastypieTest(ResourceTestCase):
         response = self.api_client.get('/api/v1/profile/{0}/'.format(str(self.profile.pk)))
         self.assertValidJSONResponse(response)
 
+    def test_toggle_admin(self):
+        url = '/api/v1/profile/{0}/toggle_admin/'.format(self.profile.pk)
+
+        self.assertEqual(self.profile.is_admin, False)
+        response = self.api_client.patch(url, data={})
+        self.assertValidJSONResponse(response)
+
+        self.profile = UserProfile.objects.get(pk=self.profile.pk)
+        self.assertEqual(self.profile.is_admin, True)
+
+        response = self.api_client.patch(url, data={})
+        self.assertValidJSONResponse(response)
+        self.profile = UserProfile.objects.get(pk=self.profile.pk)
+        self.assertEqual(self.profile.is_admin, False)
+
     def test_create_profile_email(self):
         num_profiles = UserProfile.objects.count()
         data = {"email": "newprofile@email.com",
                 "password": "newprofilepassword",
                 "frat_name": self.frat.name,
                 "frat_chapter": self.frat.chapter,
-                "frat_password": "fratpassword"}
+                "frat_password": "fratpassword",
+                "is_admin": "False",
+                "first_name": "New",
+                "last_name": "Profile",
+                }
 
         response = self.api_client.post('/api/v1/profile/create/', data=data)
         self.assertValidJSONResponse(response)
@@ -86,13 +106,25 @@ class TastypieTest(ResourceTestCase):
         profile_response = self.api_client.get('/api/v1/profile/{0}/'.format(self.profile.pk))
         profile_data = self.deserialize(profile_response)
         self.assertKeys(response_data, profile_data)
+
+        self.assertEqual(response_data['first_name'], "New")
+        self.assertTrue(not response_data['is_admin'])
 
     def test_create_profile_facebook(self):
         num_profiles = UserProfile.objects.count()
-        data = {"facebook_id": "23492912",
-                "frat_name": self.frat.name,
-                "frat_chapter": self.frat.chapter,
-                "frat_password": "fratpassword"}
+        aepi = Frat.objects.create(name="Alpha Epsilon Pi", chapter="Lambda", password="immortal11")
+        aepi.save()
+        data = {
+                    "is_admin": "True",
+                    "first_name": "Adam",
+                    "frat_name": "Alpha Epsilon Pi",
+                    "password": "",
+                    "last_name": "Gluck",
+                    "frat_chapter": "Lambda",
+                    "email": "",
+                    "frat_password": "immortal11",
+                    "facebook_id": "1247010773"
+                }
         response = self.api_client.post('/api/v1/profile/create/', data=data)
         self.assertValidJSONResponse(response)
         self.assertEqual(UserProfile.objects.count(), num_profiles+1)
@@ -102,6 +134,8 @@ class TastypieTest(ResourceTestCase):
         profile_response = self.api_client.get('/api/v1/profile/{0}/'.format(self.profile.pk))
         profile_data = self.deserialize(profile_response)
         self.assertKeys(response_data, profile_data)
+        self.assertEqual(response_data["first_name"], data["first_name"])
+        self.assertTrue(response_data['is_admin'])
 
     def test_create_profile_invalid_frat(self):
         data = {"email": "some@email.com",
@@ -158,7 +192,6 @@ class TastypieTest(ResourceTestCase):
 
         self.assertEqual(self.reputation.thumbsup, old_thumbsup)
         self.assertListEqual(list(self.reputation.thumbsup_users.all()), list(old_thumbsup_users.all()))
-
 
 
 
