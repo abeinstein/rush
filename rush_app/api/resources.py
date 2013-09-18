@@ -7,7 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, HttpRequest
-from tastypie.http import HttpUnauthorized, HttpForbidden, HttpCreated, HttpAccepted, HttpBadRequest, HttpGone
+from tastypie.http import HttpUnauthorized, HttpForbidden, HttpCreated,  \
+HttpAccepted, HttpBadRequest, HttpGone, HttpApplicationError
 from tastypie.authorization import Authorization, DjangoAuthorization, Authorization
 from tastypie.authentication import BasicAuthentication
 from tastypie.resources import ALL, ALL_WITH_RELATIONS
@@ -67,6 +68,36 @@ class RushResource(ModelResource):
         queryset = Rush.objects.all()
         allowed_methods = ['get', 'post', 'patch', 'delete']
         authorization = Authorization()
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/upload_photo/$" %
+                self._meta.resource_name,
+                self.wrap_view('upload_photo'), name="api_upload_photo"),
+        ]
+
+
+    def upload_photo(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        data = self.deserialize(request, request.body)
+        rush_id = data.get('id', '')
+        url = data.get('url', '')
+        try:
+            rush = Rush.objects.get(pk=int(rush_id))
+        except ObjectDoesNotExist:
+            return self.create_response(request, {'message': "Rush could not be found"},
+                response_class=HttpBadRequest)
+
+        try:
+            rush.upload_picture_from_url(url)
+        except:
+            return self.create_response(request, {'message': "Picture could not be uploaded :("},
+                response_class=HttpApplicationError)
+
+        return self.create_response(request, {})
+
+
+
 
 # class CustomJSONSerializer(Serializer):
 #     def from_json(self, content):

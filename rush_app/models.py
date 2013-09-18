@@ -1,11 +1,19 @@
+import urllib
+
 from annoying.fields import AutoOneToOneField
 from django.db import models
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.hashers import make_password
+from django.core.files import File
 from django.forms import ModelForm
 
+from django_boto.s3.storage import S3Storage
+
+s3 = S3Storage()
 
 
+# TODO: Make this more robust. If user first takes an iPhone pic but then 
+# uploads a web pic, picture_url should be updated accordingly.
 class Rush(models.Model):
 	'''A boy living out his last days as a GDI'''
 	first_name = models.CharField(max_length=50, blank=True)
@@ -18,14 +26,38 @@ class Rush(models.Model):
 	frat = models.ForeignKey('Frat')
 	dorm = models.CharField(max_length=50, blank=True)
 	hometown = models.CharField(max_length=100, blank=True)
-	picture = models.ImageField(upload_to="img", blank=True)
+
+	# only used for pics on web
+	picture = models.ImageField(storage=s3, upload_to="img/", blank=True) 
+	# iphone_pic = models.BooleanField(default=False) # Did pic come from iphone?
 
 
 	def __unicode__(self):
 		return self.first_name + " " + self.last_name
 
+
+
 	def save(self, *args, **kwargs):
+		# if self.picture and not self.picture_url:
+		# 	self.picture_url = self.picture.url
 		super(Rush, self).save(*args, **kwargs)
+
+	@property
+	def picture_url(self):
+		if self.picture and hasattr(self.picture, 'url'):
+			return self.picture.url
+		elif self.picture:
+			return self.picture
+		else:
+			return '#'
+
+	def upload_picture_from_url(self, url):
+		''' Takes a url to image, and stores it in the ImageField
+		To be used when Adam sends me S3 urls generated from iPhone
+		 '''
+		result = urllib.urlretrieve(url)
+		self.picture.save(url, File(open(result[0])))
+		self.save()
 
 
 

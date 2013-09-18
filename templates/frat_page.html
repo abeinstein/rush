@@ -25,14 +25,14 @@
 <div class="container">
     <div class="starter-template">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-6 rush-left">
                 <table class="table table-hover table-enlarged">
                     <tbody>
                     {% for rush in rushes %}
                     <tr class="rush-row">
                         <td> 
                             <div id="rush-{{forloop.counter}}">
-                                <img src="{{ rush.picture }}" class="rush-image img-responsive img-thumbnail"> 
+                                <img src="{{ rush.picture_url }}" class="rush-image img-responsive img-thumbnail"> 
                                 <p class="rush-name"> {{ rush }}</p>
                                 <p class="num-comments"> {{ rush.comment_set.count }} comments </p>
                             </div> <!-- rush-row -->
@@ -53,7 +53,7 @@
                 {% endif %}
                     <div class="row well">
                         <div class="col-lg-6 rush-profile-image">
-                            <img class="img-responsive" src="{{ rush.picture }}">
+                            <img class="img-responsive" src="{{ rush.picture_url }}">
                         </div>
                         <div class="col-lg-6">
                             <div class="rush-info">

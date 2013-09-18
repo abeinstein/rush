@@ -6,3 +6,5 @@ class RushCreateForm(forms.ModelForm):
         model = Rush
         fields = ['first_name', 'last_name', 'phone_number', 
                 'email', 'dorm', 'hometown', 'picture']
+
+

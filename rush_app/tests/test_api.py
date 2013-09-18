@@ -193,8 +193,8 @@ class TastypieTest(ResourceTestCase):
         self.assertEqual(self.reputation.thumbsup, old_thumbsup)
         self.assertListEqual(list(self.reputation.thumbsup_users.all()), list(old_thumbsup_users.all()))
 
-
-
+    # def test_picture(self):
+        
     
 
 

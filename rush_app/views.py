@@ -32,10 +32,24 @@ class RushCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.frat = self.request.user.userprofile.frat
+        import pdb; pdb.set_trace()
+        # form. = Rush(picture=self.request.FILES['picture'])
+
+        # picture.save()
         return super(RushCreateView, self).form_valid(form)
 
     def get_form_class(self):
         return RushCreateForm
+
+    # TODO: Figure out if this was actually necessary
+    def get_form_kwargs(self):
+        kwargs = {'initial': self.get_initial()}
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+                })
+        return kwargs
 
     def get_success_url(self):
         return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
@@ -46,6 +60,15 @@ class RushUpdateView(UpdateView):
 
     def get_form_class(self):
         return RushCreateForm
+
+    def get_form_kwargs(self):
+        kwargs = super(RushUpdateView, self).get_form_kwargs()
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+                })
+        return kwargs
 
     def get_success_url(self):
         return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
