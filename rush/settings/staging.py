@@ -1,7 +1,7 @@
 from .base import *
 
-DEBUG = False
-TEMPLATE_DEBUG = False
+DEBUG = True
+TEMPLATE_DEBUG = True
 
 import dj_database_url
 
