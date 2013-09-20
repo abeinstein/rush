@@ -48,6 +48,28 @@ class TastypieTest(ResourceTestCase):
         response = self.api_client.get('/api/v1/rush/{0}/'.format(str(self.rush.pk)))
         self.assertValidJSONResponse(response)
 
+    def test_create_rush(self):
+        count = Rush.objects.count()
+        data = {
+        "first_name": "Erik", 
+        "last_name": "Halperin",
+        "phone_number": "23432423",
+        "email": "erik@gmail.com",
+        "frat": '/api/v1/frat/{0}/'.format(str(self.frat.pk)),
+        "dorm": "Stony",
+        "hometown": "Boston, MA"
+        }
+        response = self.api_client.post('/api/v1/rush/', data=data)
+        self.assertHttpCreated(response)
+        self.assertEqual(Rush.objects.count(), count+1)
+
+        response_data = self.deserialize(response)
+        
+        # Check that rush ID is returned for Adam
+        rush_id = Rush.objects.get(first_name="Erik").pk
+        self.assertEqual(rush_id, response_data['id'])
+
+
     # Frat resource tests
 
     def test_get_detail_frat(self):

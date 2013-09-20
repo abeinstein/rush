@@ -68,6 +68,7 @@ class RushResource(ModelResource):
         queryset = Rush.objects.all()
         allowed_methods = ['get', 'post', 'patch', 'delete']
         authorization = Authorization()
+        always_return_data = True
 
     def prepend_urls(self):
         return [
