@@ -51,10 +51,10 @@
           {% block navbar-rushlist %}
           {% endblock navbar-rushlist %}
           <ul class="nav navbar-nav navbar-right">
-              <li><a href="{% url 'signup' %}">Sign Up</a></li>
               {% if user.is_authenticated %}
               <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
               {% else %}
+              <li><a href="{% url 'signup' %}">Sign Up</a></li>
               <li><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
               {% endif %}
           </ul>

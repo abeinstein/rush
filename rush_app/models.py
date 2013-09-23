@@ -80,7 +80,7 @@ class Frat(models.Model):
 		return self.name + " at " + self.university
 
 
-class UserProfile(FacebookProfileModel):
+class UserProfile(models.Model):
 	'''A Frat Star (Or sorority star)'''
 	user = AutoOneToOneField(User, primary_key=True)
 
