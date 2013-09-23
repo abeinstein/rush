@@ -33,7 +33,6 @@ class RushCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.frat = self.request.user.userprofile.frat
-        import pdb; pdb.set_trace()
         # form. = Rush(picture=self.request.FILES['picture'])
 
         # picture.save()
@@ -73,6 +72,7 @@ class RushUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
+
 
 class RushDeleteView(DeleteView):
     model = Rush

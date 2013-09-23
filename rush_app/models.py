@@ -7,10 +7,8 @@ from django.contrib.auth.hashers import make_password
 from django.core.files import File
 from django.forms import ModelForm
 
-from django_boto.s3.storage import S3Storage
 # from django_facebook.models import FacebookProfileModel
 
-s3 = S3Storage()
 
 
 # TODO: Make this more robust. If user first takes an iPhone pic but then 
@@ -27,8 +25,7 @@ class Rush(models.Model):
 	frat = models.ForeignKey('Frat')
 	dorm = models.CharField(max_length=50, blank=True)
 	hometown = models.CharField(max_length=100, blank=True)
-	picture = models.ImageField(storage=s3, upload_to="img/", blank=True) 
-
+	picture = models.ImageField(upload_to="img/", blank=True)
 
 	def __unicode__(self):
 		return self.first_name + " " + self.last_name
