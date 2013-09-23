@@ -33,7 +33,6 @@ class SignUpForm(forms.Form):
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("User with that username already exists")
 
-        if not check_password(frat_password,
-                            Frat.objects.get(pk=cleaned_data.get('frat')).password):
+        if not check_password(frat_password, cleaned_data.get('frat').password):
             raise forms.ValidationError("Incorrect frat pasword.")
 
