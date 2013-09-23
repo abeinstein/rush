@@ -40,21 +40,8 @@ class Migration(SchemaMigration):
 
         # Adding model 'UserProfile'
         db.create_table(u'rush_app_userprofile', (
-            ('about_me', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('facebook_id', self.gf('django.db.models.fields.BigIntegerField')(unique=True, null=True, blank=True)),
-            ('access_token', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('facebook_name', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('facebook_profile_url', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('website_url', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('blog_url', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('date_of_birth', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('gender', self.gf('django.db.models.fields.CharField')(max_length=1, null=True, blank=True)),
-            ('raw_data', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('facebook_open_graph', self.gf('django.db.models.fields.NullBooleanField')(null=True, blank=True)),
-            ('new_token_required', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=255, null=True, blank=True)),
             ('user', self.gf('annoying.fields.AutoOneToOneField')(to=orm['auth.User'], unique=True, primary_key=True)),
-            ('frat', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rush_app.Frat'])),
+            ('frat', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rush_app.Frat'], null=True, blank=True)),
             ('is_admin', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal(u'rush_app', ['UserProfile'])
@@ -200,22 +187,9 @@ class Migration(SchemaMigration):
         },
         u'rush_app.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
-            'about_me': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'access_token': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'blog_url': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'facebook_id': ('django.db.models.fields.BigIntegerField', [], {'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'facebook_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'facebook_open_graph': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
-            'facebook_profile_url': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'frat': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rush_app.Frat']"}),
-            'gender': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
-            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'frat': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rush_app.Frat']", 'null': 'True', 'blank': 'True'}),
             'is_admin': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'new_token_required': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'raw_data': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'user': ('annoying.fields.AutoOneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True', 'primary_key': 'True'}),
-            'website_url': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
+            'user': ('annoying.fields.AutoOneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True', 'primary_key': 'True'})
         }
     }
 

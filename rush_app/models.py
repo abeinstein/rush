@@ -8,7 +8,7 @@ from django.core.files import File
 from django.forms import ModelForm
 
 from django_boto.s3.storage import S3Storage
-from django_facebook.models import FacebookProfileModel
+# from django_facebook.models import FacebookProfileModel
 
 s3 = S3Storage()
 
