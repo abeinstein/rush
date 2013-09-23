@@ -11,6 +11,6 @@ urlpatterns = patterns('',
     url(r'^rushes/edit/(?P<pk>\d+)/$', RushUpdateView.as_view(), name="edit_rush"),
     url(r'^rushes/delete/(?P<pk>\d+)/$', RushDeleteView.as_view(), name="delete_rush"),
 
-    url(r'^thumbs/(\d)/(\d)/(\d)/$', thumbs, name="thumbs"),
+    url(r'^thumbs/(\d)/(\d+)/(\d+)/$', thumbs, name="thumbs"),
     url(r'^add_comment/(\d+)/(\d+)/$', add_comment, name="add_comment"),
 )

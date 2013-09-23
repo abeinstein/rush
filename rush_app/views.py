@@ -163,7 +163,7 @@ def thumbs(request, is_up, user_id, rush_id):
             rush.reputation.thumbsdown_users.add(user.userprofile)
         rush.reputation.save()
 
-    return all_frats(request)
+    return redirect('show_frat', frat_id=rush.frat.id)
 
 @login_required
 def add_comment(request, rush_pk, user_pk):

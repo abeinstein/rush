@@ -34,7 +34,10 @@
                             <div id="rush-{{forloop.counter}}">
                                 <img src="{{ rush.picture_url }}" class="rush-image img-responsive img-thumbnail"> 
                                 <p class="rush-name"> {{ rush }}</p>
-                                <p class="num-comments"> {{ rush.comment_set.count }} comment{{ rush.comment_set.count|pluralize }} </p>
+                                <p class="num-comments"> {{ rush.comment_set.count }} comment{{ rush.comment_set.count|pluralize }},
+                                {{ rush.reputation.thumbsup }} endorsement{{ rush.reputation.thumbsup|pluralize }}
+
+                                 </p>
                             </div> <!-- rush-row -->
 
                         </td>
@@ -74,7 +77,7 @@
                                 {% endif %}
                             </div> <!-- rush-info -->
                             <div class="rush-control">
-                                <a class="btn btn-success btn-large btn-block" href="/">Endorse</a>
+                                <a class="btn btn-success btn-large btn-block" href="{% url 'thumbs' 1 user.pk rush.pk %}">Endorse</a>
                                 <a class="btn btn-primary btn-block" href="{% url 'edit_rush' rush.pk %}">Edit</a>
                                 <a class="btn btn-danger btn-block" href="{% url 'delete_rush' rush.pk %}">Delete</a>
                             </div> <!-- rush-control -->
