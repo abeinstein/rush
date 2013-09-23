@@ -69,8 +69,7 @@ class TastypieTest(ResourceTestCase):
         rush_id = Rush.objects.get(first_name="Erik").pk
         self.assertEqual(rush_id, response_data['id'])
 
-    def test_upload_picture(self):
-        
+
 
 
     # Frat resource tests
@@ -111,6 +110,7 @@ class TastypieTest(ResourceTestCase):
         self.assertEqual(self.profile.is_admin, False)
 
     def test_create_profile_email(self):
+
         num_profiles = UserProfile.objects.count()
         data = {"email": "newprofile@email.com",
                 "password": "newprofilepassword",
@@ -122,6 +122,7 @@ class TastypieTest(ResourceTestCase):
                 "last_name": "Profile",
                 }
 
+        import pdb; pdb.set_trace()
         response = self.api_client.post('/api/v1/profile/create/', data=data)
         self.assertValidJSONResponse(response)
         self.assertEqual(UserProfile.objects.count(), num_profiles+1)

@@ -175,6 +175,7 @@ class UserProfileResource(ModelResource):
     # TODO: Clean up code. Spagetti code!!
     # TODO: Hopefully my code never gets any wore
     def create(self, request, **kwargs):
+
         self.method_check(request, allowed=['post'])
         data = self.deserialize(request, request.body)
 
@@ -225,10 +226,14 @@ class UserProfileResource(ModelResource):
             u.last_name = last_name
             u.save()
 
+            import pdb; pdb.set_trace()
             # Now, will create user profile
             pro = UserProfile(user=u, frat=frat)
-            pro.facebook_id = facebook_id
-            pro.is_admin = eval(is_admin)
+            if facebook_id:
+                pro.facebook_id = facebook_id
+            else:
+                pro.facebook_id = '0'
+            pro.is_admin = eval(is_admin) # TODO: SECURITY HOLE
             pro.save()
 
             # The horror! The horror!
