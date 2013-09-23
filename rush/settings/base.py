@@ -135,6 +135,7 @@ INSTALLED_APPS = (
     'tastypie',
     'discover_runner',
     'tastypie_swagger',
+    'django_facebook',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -182,6 +183,15 @@ BOTO_S3_BUCKET = os.environ['AWS_STORAGE_BUCKET_NAME']
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 
+# FACEBOOK stuff
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+TEMPLATE_CONTEXT_PROCESSORS += ('django_facebook.context_processors.facebook',)
 
+AUTHENTICATION_BACKENDS = (
+    'django_facebook.auth_backends.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
+# AUTH_PROFILE_MODULE = 'rush_app.UserProfile'
+# AUTH_USER_MODEL = 'rush_app.models.UserProfile'
 

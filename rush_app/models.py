@@ -8,6 +8,7 @@ from django.core.files import File
 from django.forms import ModelForm
 
 from django_boto.s3.storage import S3Storage
+from django_facebook.models import FacebookProfileModel
 
 s3 = S3Storage()
 
@@ -26,10 +27,7 @@ class Rush(models.Model):
 	frat = models.ForeignKey('Frat')
 	dorm = models.CharField(max_length=50, blank=True)
 	hometown = models.CharField(max_length=100, blank=True)
-
-	# only used for pics on web
 	picture = models.ImageField(storage=s3, upload_to="img/", blank=True) 
-	# iphone_pic = models.BooleanField(default=False) # Did pic come from iphone?
 
 
 	def __unicode__(self):
@@ -59,9 +57,6 @@ class Rush(models.Model):
 		self.picture.save(url, File(open(result[0])))
 		self.save()
 
-
-
-
 class Frat(models.Model):
 	'''Letters today, leaders tomorrow'''
 	name = models.CharField(max_length=100)
@@ -85,15 +80,24 @@ class Frat(models.Model):
 		return self.name + " at " + self.university
 
 
-class UserProfile(models.Model):
+class UserProfile(FacebookProfileModel):
 	'''A Frat Star (Or sorority star)'''
 	user = AutoOneToOneField(User, primary_key=True)
-	frat = models.ForeignKey(Frat)
+
+	# blank because we may not yet know frat when created
+	frat = models.ForeignKey(Frat, blank=True, null=True)  
 	is_admin = models.BooleanField(default=False)
-	facebook_id = models.CharField(unique=True, max_length=50, null=True, blank=True)
 
 	def __unicode__(self):
 		return self.user.username
+
+# from django.db.models.signals import post_save
+
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         UserProfile.objects.create(user=instance)
+
+# post_save.connect(create_user_profile, sender=User)
 
 
 class Reputation(models.Model):

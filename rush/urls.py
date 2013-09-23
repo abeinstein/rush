@@ -5,6 +5,7 @@ from django.contrib.auth.views import login, logout
 from tastypie.api import Api
 from rush_app.api.resources import RushResource, CommentResource, FratResource
 from rush_app.api.resources import UserProfileResource, UserResource, ReputationResource
+from rush_app.views import SignUpView
 
 admin.autodiscover()
 v1_api = Api(api_name='v1')
@@ -29,7 +30,10 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/', login, name="login"),
     url(r'^logout/', logout, {'next_page': '/'}, name="logout"),
+    url(r'^signup/', SignUpView.as_view(), name="signup"),
     url(r'^comments/', include('django.contrib.comments.urls')),
     url(r'^api/', include(v1_api.urls)),
     url(r'^api/doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger')),
+    url(r'^facebook/', include('django_facebook.urls')),
+    url(r'^accounts/', include('django_facebook.auth_urls')),
 )

@@ -6,8 +6,8 @@
 
 {% block navbar-rushlist %}
     <ul class="nav navbar-nav">
-        <li><a href="/">See rushes</a></li>
-        <li><a href="{% url "add_rush" %}">Add a rush</a></li>
+        <li><a href="/">All Rushes</a></li>
+        <li><a href="{% url "add_rush" %}">Add a Rush</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-rushes">
         <li class="dropdown">
@@ -34,7 +34,7 @@
                             <div id="rush-{{forloop.counter}}">
                                 <img src="{{ rush.picture_url }}" class="rush-image img-responsive img-thumbnail"> 
                                 <p class="rush-name"> {{ rush }}</p>
-                                <p class="num-comments"> {{ rush.comment_set.count }} comments </p>
+                                <p class="num-comments"> {{ rush.comment_set.count }} comment{{ rush.comment_set.count|pluralize }} </p>
                             </div> <!-- rush-row -->
 
                         </td>
@@ -87,12 +87,12 @@
 
                             <div class="right-comment"> 
                                 <div class="right-comment-text">{{ comment.body }}</div>
-                                <div class="comment-name"> {{ comment.userprofile.user }} </div>
+                                <div class="comment-name"> {{ comment.userprofile.user.first_name }} {{ comment.userprofile.user.last_name }}</div>
                             </div> <!-- right-comment -->
                             {% else %}
                             <div class="left-comment">
                                 <div class="left-comment-text">{{ comment.body }}</div>
-                                <div class="comment-name"> {{ comment.userprofile.user }} </div>
+                                <div class="comment-name"> {{ comment.userprofile.user.first_name }} {{ comment.userprofile.user.last_name }} </div>
                             </div>
                             {% endif %}
                             {% endfor %}

@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
 
 from .models import Frat, User, Rush, Comment, CommentForm, UserProfile
-from .forms import RushCreateForm
+from .forms import RushCreateForm, SignUpForm
 
 
 # class RushListView(ListView):
@@ -79,6 +80,32 @@ class RushDeleteView(DeleteView):
     def get_success_url(self):
         return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
 
+class SignUpView(FormView):
+    template_name="signup.html"
+    form_class = SignUpForm
+
+    def form_valid(self, form):
+        username = form.data['username']
+        email = form.data['email']
+        password = form.data['password']
+
+        user = User.objects.create_user(username, email, password)
+        user.first_name = form.data['first_name']
+        user.last_name = form.data['last_name']
+        user.save()
+
+        frat = Frat.objects.get(pk=int(form.data['frat']))
+        pro = UserProfile.objects.create(user=user, frat=frat)
+        pro.save()
+
+        # Log the user in
+        user = authenticate(username=username, password=password)
+        login(self.request, user)
+
+        return redirect('show_frat', frat_id=frat.id)
+
+    
+
 
 
 
@@ -148,9 +175,8 @@ def add_comment(request, rush_pk, user_pk):
         comment = Comment(rush=rush, userprofile=prof)
         cf = CommentForm(p, instance=comment)
         cf.save()
-    return show_frat(request, request.user.userprofile.frat.id, active_rush=rush)
-    # return HttpResponseRedirect(reverse('rush_app.views.show_frat', 
-    #     args=(request.user.userprofile.frat.id, rush)))
+
+    return redirect('show_frat', request.user.userprofile.frat.id)
 
 
 

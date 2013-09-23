@@ -69,6 +69,9 @@ class TastypieTest(ResourceTestCase):
         rush_id = Rush.objects.get(first_name="Erik").pk
         self.assertEqual(rush_id, response_data['id'])
 
+    def test_upload_picture(self):
+        
+
 
     # Frat resource tests
 

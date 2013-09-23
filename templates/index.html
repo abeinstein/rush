@@ -1,6 +1,50 @@
 {% extends "base.html" %}
 
+{% block styles %}
+<link href="{{ STATIC_URL }}css/facebook.css" type="text/css" rel="stylesheet" media="all" />
+{% include 'django_facebook/_facebook_js.html' %}
+
+{% endblock styles %}
 {% block content %}
-<h2> Home Page </h2>
+
+
+<div class="body container">
+<h2> Welcome to Rush: Go Greek! </h2>
+
+<h3> This is an alpha version of the site, not to be used with any frat except AEPi LAMBDA </h3>
+Right now, you can:
+<ul>
+    <li>Sign up/login </li>
+    <li> See rushes </li>
+    <li> Add rushes </li>
+    <li> Chat about rushes </li>
+    <li> Do all of this on your phone semi-comfortably </li>
+</ul>
+
+Very soon (hopefully in a few days) you will be able to :
+<ul> 
+    <li> Post pictures </li>
+    <li> Endorse rushes </li>
+    <li> Login with Facebook </li>
+</ul>
+
+In the nearish future,
+<ul>
+    <li> Admin privledges </li>
+    <li> Site will look less ghetto </li>
+    <li> It will be faster, and it will use fucking AJAX so the site won't have to refresh each time you make a comment </li>
+    <li> Editing rushes will be easier / look less ghetto </li>
+</ul>
+
+Eventually, the site will:
+<ul>
+    <li> Prepopulate rush fields by copying/pasting a facebook link to a rush </li>
+    <li> Use machine leanrning to suggest possible rushes from facebook data </li>
+    <li> Win the nominal tournament  </li>
+</ul>
+
+<p> Shoutout to <strong>SAM MAIDMAN</strong>. What a chill bro.</p>
+
+</div>
 
 {% endblock %}

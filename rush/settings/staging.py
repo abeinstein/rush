@@ -23,3 +23,6 @@ STATIC_URL = '/static/'
 # STATICFILES_DIRS = (
 #     os.path.join(PROJECT_DIR, '../static'),
 # )
+
+FACEBOOK_APP_ID = '158648264324841'
+FACEBOOK_APP_SECRET = 'e558c5182520ae03b9f30dcedb79e0d7'
