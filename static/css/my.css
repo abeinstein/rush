@@ -35,7 +35,7 @@ body {
     max-width: none;
 }
 
-.starter-template {
+.starter-template { 
   padding: 15px 15px;
   text-align: center;
   font-family: 'Merriweather', serif;
@@ -65,9 +65,11 @@ textarea {
   padding: 10px;
 }
 
-/*.rush-left {
-    position: absolute;
-}*/
+.rush-left {
+    max-height: 700px;
+    overflow: scroll;
+    width: 50%;
+}
 
 table {
     border-right: 1px solid gray;
@@ -90,10 +92,10 @@ table {
 /* Rush Profile */
 
 
-/*.profile-container {
-    position: absolute;
-    overflow: hidden;
-}*/
+.profile-container {
+    max-height: 700px;
+    overflow: scroll;
+}
 
 /* Make first profile visible, all others hidden */
 .rush-profile {
@@ -217,7 +219,7 @@ p > i {
 }
 
 /* Let's be responsive!! */
-@media screen and (max-width:699px) {
+@media screen and (max-width: 1199px) {
     .table-enlarged {
         display: none;
     }
@@ -225,11 +227,20 @@ p > i {
     #lines-button {
         display: none;
     }
+
+    .profile-container {
+        width: 100%;
+    }
 }
 
-@media screen and (min-width: 700px) {
+@media screen and (min-width: 1200px) {
     .navbar-rushes {
         display: none;
+    }
+
+    .profile-container {
+        width: 50%;
+        float: left;
     }
 }
 

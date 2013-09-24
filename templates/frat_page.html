@@ -26,7 +26,7 @@
     <div class="starter-template">
         <div class="row">
             <div class="col-lg-6 rush-left">
-                <table class="table table-hover table-enlarged">
+                <table class="table table-hover table-enlarged rush-table">
                     <tbody>
                     {% for rush in rushes %}
                     <tr class="rush-row">
@@ -46,7 +46,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-6" id="profile-container">
+            <div class="col-lg-6 profile-container">
                 {% for rush in rushes %}
                 
                 {% if rush.pk == active_rush.pk %}
