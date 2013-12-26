@@ -72,9 +72,9 @@ textarea {
 }
 
 table {
-    border-right: 1px solid gray;
-    margin: -10px;
-    max-width: 100%;
+/*    border-right: 1px solid gray;
+*//*    margin: -10px;
+*/    max-width: 100%;
 }
 
 
@@ -203,11 +203,11 @@ p > i {
     float: left;
 }
 
-.comment-form button {
+.comment-form-outer button {
     display: inline-block;
 }
 
-.comment-form {
+.comment-form-outer {
     margin-top: 2em;
 }
 

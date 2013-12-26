@@ -50,9 +50,9 @@
                 {% for rush in rushes %}
                 
                 {% if rush.pk == active_rush.pk %}
-                <div class="rush-profile active" id="rush-{{ forloop.counter }}-profile">
+                <div class="rush-profile active" id="rush-{{ forloop.counter }}-profile" data-rush-id="{{ rush.pk }}">
                 {% else %}
-                <div class="rush-profile" id="rush-{{ forloop.counter }}-profile">
+                <div class="rush-profile" id="rush-{{ forloop.counter }}-profile" data-rush-id="{{ rush.pk }}">
                 {% endif %}
                     <div class="row well">
                         <div class="col-lg-6 rush-profile-image">
@@ -103,9 +103,11 @@
                     </div> <!-- row -->
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="comment-form">
+                            <div class="comment-form-outer">
                                 {% if user.is_authenticated %}
-                                <form action="{% url 'add_comment' rush.pk user.userprofile.pk %}" method="POST">
+                                <form action="{% url 'add_comment' rush.pk user.userprofile.pk %}" method="POST" class="comment-form-inner" data-rush-id="{{ rush.pk }}" data-prof-id="{{ user.userprofile.pk }}"
+                                data-prof-name="{{ user.userprofile.user.first_name}} {{ user.userprofile.user.last_name }}"
+                                >
                                     {% csrf_token %}
                                     <div class="input-group">
                                         <textarea class="form-control" rows="3" name="body" placeholder="Add comment..."></textarea>
@@ -117,7 +119,7 @@
                                 {% else %}
                                     <p>Please <a href="{% url 'auth_login' %}">log in</a> to leave a comment.</p>
                                 {% endif %}
-                            </div> <!-- comment-form -->
+                            </div> <!-- comment-form-outer -->
                         </div> <!-- col-lg-12 -->
                     </div> <!-- row -->
                 </div>  <!-- rush-profile -->  

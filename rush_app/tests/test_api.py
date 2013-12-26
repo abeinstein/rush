@@ -122,7 +122,6 @@ class TastypieTest(ResourceTestCase):
                 "last_name": "Profile",
                 }
 
-        import pdb; pdb.set_trace()
         response = self.api_client.post('/api/v1/profile/create/', data=data)
         self.assertValidJSONResponse(response)
         self.assertEqual(UserProfile.objects.count(), num_profiles+1)

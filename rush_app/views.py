@@ -137,10 +137,8 @@ def show_frat(request, frat_id, active_rush=''):
         frat = Frat.objects.get(pk=frat_id)
         # Generate a form for each rush
         form = CommentForm()
-        # for r in frat.rush_set.all():
-        #     print r.id
-        #     forms[r.id] = CommentForm()
-        rushes = frat.rush_set.all()
+
+        rushes = frat.rush_set.all().order_by('first_name')
         if not active_rush:
             active_rush = rushes[0]
 
