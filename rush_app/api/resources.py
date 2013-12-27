@@ -173,7 +173,7 @@ class UserProfileResource(ModelResource):
 
     # TODO: Hook into native tastypie 
     # TODO: Clean up code. Spagetti code!!
-    # TODO: Hopefully my code never gets any wore
+    # TODO: Hopefully my code never gets any worse
     def create(self, request, **kwargs):
 
         self.method_check(request, allowed=['post'])
@@ -226,7 +226,6 @@ class UserProfileResource(ModelResource):
             u.last_name = last_name
             u.save()
 
-            import pdb; pdb.set_trace()
             # Now, will create user profile
             pro = UserProfile(user=u, frat=frat)
             if facebook_id:

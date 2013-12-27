@@ -17,7 +17,9 @@ class SignUpForm(forms.Form):
     username = forms.CharField(required=True)
     password = forms.CharField(required=True, widget=forms.PasswordInput)
     password_confirmation = forms.CharField(required=True, widget=forms.PasswordInput)
-    frat = forms.ModelChoiceField(required=True, queryset=Frat.objects.all())
+    frat = forms.ModelChoiceField(required=True, queryset=Frat.objects.all(), 
+        widget=forms.Select(attrs={"class": "form-control"}),
+        empty_label="Select your fraternity/sorority")
     frat_password = forms.CharField(required=True, widget=forms.PasswordInput)
 
     def clean(self):

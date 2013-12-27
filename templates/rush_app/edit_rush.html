@@ -2,9 +2,38 @@
 
 {% block content %}
 <div class="body container">
-<form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+<!-- <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Update!" />
+</form> -->
+
+<form method="post" enctype="multipart/form-data" action="" class="form-signin" role="form">
+    {% csrf_token %}
+        {{ form.non_field_errors }}
+        <h2 class="form-signin-heading" style="text-align: center;">Edit rush</h2> 
+        {{ form.first_name.errors }}
+        <input id="id_first_name" name="first_name" type="text" class="form-control" placeholder="First name" value="{{ form.first_name.value }}" >
+        {{ form.last_name.errors }}
+        <input id="id_last_name" name="last_name" type="text" class="form-control" placeholder="Last name" value="{{ form.last_name.value }}">
+        {{ form.phone_number.errors }}
+        <input id="id_phone_number" name="phone_number" type="phone" class="form-control" placeholder="Phone number" value="{{ form.phone_number.value }}" >
+        {{ form.email.errors }}
+        <input id="id_email" name="email" type="email" class="form-control" placeholder="Email"  value="{{ form.email.value }}">
+        {{ form.dorm.errors }}
+        <input id="id_dorm" name="dorm" type="text" class="form-control" placeholder="Dorm"  value="{{ form.dorm.value }}">
+        {{ form.hometown.errors }}
+        <input id="id_hometown" name="hometown" type="text" class="form-control" placeholder="Hometown"  value="{{ form.hometown.value }}">
+        {{ form.picture.errors }}
+        <div class="fileinput fileinput-new" data-provides="fileinput">
+        
+        <div>
+            <span class="btn btn-default btn-file"><span class="fileinput-new">Add a picture</span><span class="fileinput-exists">Change</span><input type="file" id="id_picture" name="picture" value="{{ form.picture.value }}"></span>
+            <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+        </div>
+        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" value="Submit" type="submit">Submit</button>
+        <input type="hidden" name="next" value="{{ next }}" />
 </form>
 </div>
 {% endblock content %}

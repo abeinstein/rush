@@ -2,9 +2,34 @@
 
 {% block content %}
  <div class="body container" style="padding-top: 10px">
-<form action="" method="post">{% csrf_token %}
+<!-- <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Sign up!" />
+</form> -->
+
+<form action="" method="post" class="form-signup" role="form">{% csrf_token %}
+    {{ form.non_field_erorrs }}
+    <h2 class="form-signup-heading" style="text-align: center;">Sign up</h2> 
+    {{ form.first_name.errors }}
+        <input id="id_first_name" name="first_name" type="text" class="form-control" placeholder="First name" required autofocus>
+    {{ form.last_name.errors }}
+        <input id="id_last_name" name="last_name" type="text" class="form-control" placeholder="Last name" required autofocus>
+    {{ form.email.errors }}
+        <input id="id_email" name="email" type="email" class="form-control" placeholder="Email" required autofocus>
+    {{ form.username.errors }}
+        <input id="id_username" name="username" type="text" class="form-control" placeholder="Username" required autofocus>
+    {{ form.password.errors }}
+        <input id="id_password" name="password" type="password" class="form-control" placeholder="Password" required autofocus>
+    {{ form.password_confirmation.errors }}
+        <input id="id_password_confirmation" name="password_confirmation" type="password" class="form-control" placeholder="Password (again)" required autofocus>
+    <hr>
+    {{ form.frat }}
+    {{ form.frat_password.errors }}
+        <input id="id_frat_password" name="frat_password" type="password" class="form-control" placeholder="Fraternity/Sorority password" required autofocus>
+
+    <button class="btn btn-lg btn-primary btn-block" value="Submit" type="submit">Sign up</button>
+
+
 </form>
 </div>
 

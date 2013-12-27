@@ -6,5 +6,27 @@
     {{ form.as_p }}
     <input type="submit" value="Add Rush!" />
 </form>
+
+<form method="post" enctype="multipart/form-data" action="" class="form-signin" role="form">
+    {% csrf_token %}
+        {{ form.non_field_errors }}
+        <h2 class="form-signin-heading" style="text-align: center;">Add rush</h2> 
+        {{ form.first_name.errors }}
+        <input id="id_first_name" name="first_name" type="text" class="form-control" placeholder="First name"  >
+        {{ form.last_name.errors }}
+        <input id="id_last_name" name="last_name" type="text" class="form-control" placeholder="Last name" >
+        {{ form.phone_number.errors }}
+        <input id="id_phone_number" name="phone_number" type="phone" class="form-control" placeholder="Phone number"  >
+        {{ form.email.errors }}
+        <input id="id_email" name="email" type="email" class="form-control" placeholder="Email"  >
+        {{ form.dorm.errors }}
+        <input id="id_dorm" name="dorm" type="text" class="form-control" placeholder="Dorm"  >
+        {{ form.hometown.errors }}
+        <input id="id_hometown" name="hometown" type="text" class="form-control" placeholder="Hometown"  >
+        {{ form.picture.errors }}
+        <input id="id_picture" name="picture" type="file" class="form-control"  >
+        <button class="btn btn-lg btn-primary btn-block" value="Submit" type="submit">Submit</button>
+        <input type="hidden" name="next" value="{{ next }}" />
+</form>
 </div>
 {% endblock content %}
