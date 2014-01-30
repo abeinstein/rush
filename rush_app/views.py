@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.views import redirect_to_login
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
@@ -10,20 +11,20 @@ from .models import Frat, User, Rush, Comment, CommentForm, UserProfile
 from .forms import RushCreateForm, SignUpForm
 
 
-# class RushListView(ListView):
-#     ''' Main view (list of rushes) '''
-#     model = Rush
-#     template_name="rush_list.html"
+class RushListView(ListView):
+    ''' Main view (list of rushes) '''
+    model = Rush
+    template_name="rush_list.html"
 
-#     def get_context_data(self, **kwargs):
-#         context = super(RushListView, self).get_context_data(**kwargs)
-#         context["frat"] = self.request.user.userprofile.frat
-#         return context
+    def get_context_data(self, **kwargs):
+        context = super(RushListView, self).get_context_data(**kwargs)
+        context["frat"] = self.request.user.userprofile.frat
+        return context
 
-#     def get_queryset(self):
-#         queryset = super(RushListView, self).get_queryset()
-#         my_frat = self.request.user.userprofile.frat
-#         return queryset.filter(frat__pk=my_frat.pk)
+    def get_queryset(self):
+        queryset = super(RushListView, self).get_queryset()
+        my_frat = self.request.user.userprofile.frat
+        return queryset.filter(frat__pk=my_frat.pk)
 
 
 # Class based views
@@ -88,13 +89,21 @@ class SignUpView(FormView):
         username = form.data['username']
         email = form.data['email']
         password = form.data['password']
+        new_frat_created = form.data.get('new_frat_created')
 
         user = User.objects.create_user(username, email, password)
         user.first_name = form.data['first_name']
         user.last_name = form.data['last_name']
         user.save()
 
-        frat = Frat.objects.get(pk=int(form.data['frat']))
+        if new_frat_created:
+            hashed_frat_password = make_password(form.data['frat_password'])
+            frat = Frat.objects.create(name=form.data['frat'], 
+                                       university=form.data['school'],
+                                       password=hashed_frat_password)
+        else:
+            frat = Frat.objects.get(name=form.data['frat'], university=form.data['school'])
+        
         pro = UserProfile.objects.create(user=user, frat=frat)
         pro.save()
 
@@ -119,7 +128,10 @@ def home(request):
     if not request.user.is_authenticated():
         return render(request, 'index.html')
     else:
-        return show_frat(request, request.user.userprofile.frat.id)
+        try:
+            return show_frat(request, request.user.userprofile.frat.id)
+        except AttributeError: # weird random fuckup
+            return render(request, 'index.html')
 
 
 def all_frats(request):
@@ -139,7 +151,9 @@ def show_frat(request, frat_id, active_rush=''):
         form = CommentForm()
 
         rushes = frat.rush_set.all().order_by('first_name')
-        if not active_rush:
+        if not rushes:
+            active_rush = None
+        elif not active_rush:
             active_rush = rushes[0]
 
         params = {'frat': frat, 'form': form, 'rushes': rushes, 'active_rush': active_rush}

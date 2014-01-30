@@ -1,33 +1,96 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+<script>
+
+$("#new_frat").click(function(event) {
+    event.preventDefault();
+    unhideFields();
+    $("#id_frat_password_confirmation").removeClass("hidden");
+    $("#id_new_frat_created").prop('checked', true);
+    $(this).addClass("active");
+    $("#existing_frat").removeClass("active");
+});
+
+$("#existing_frat").click(function(event) {
+    event.preventDefault();
+    unhideFields();
+    $("#id_frat_password_confirmation").addClass("hidden");
+    $("#id_new_frat_created").prop('checked', false);
+    $(this).addClass("active");
+    $("#new_frat").removeClass("active");
+})
+
+function unhideFields() {
+    $("#id_school").removeClass("hidden");
+    $("#id_frat").removeClass("hidden");
+    $("#id_frat_password").removeClass("hidden");
+    $("#submit-button").removeClass("hidden");
+}
+
+
+
+</script>
+
+{% endblock scripts %} 
+
+{% block styles %}
+
+<style>
+.hidden {
+    display: none;
+}
+
+#submit-button {
+    margin-top: 10px;
+}
+
+.new-existing-buttons {
+    margin: auto;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+</style>
+
+{% endblock styles %}
+
 {% block content %}
  <div class="body container" style="padding-top: 10px">
-<!-- <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Sign up!" />
-</form> -->
+
 
 <form action="" method="post" class="form-signup" role="form">{% csrf_token %}
-    {{ form.non_field_erorrs }}
-    <h2 class="form-signup-heading" style="text-align: center;">Sign up</h2> 
+    {% for non_field_error in form.non_field_errors %}
+    <div class="alert alert-danger">
+        {{ non_field_error }}
+    </div>
+    {% endfor %}
+    <h2 class="form-signup-heading" style="text-align: center;">Sign Up</h2> 
     {{ form.first_name.errors }}
         <input id="id_first_name" name="first_name" type="text" class="form-control" placeholder="First name" required autofocus>
     {{ form.last_name.errors }}
-        <input id="id_last_name" name="last_name" type="text" class="form-control" placeholder="Last name" required autofocus>
+        <input id="id_last_name" name="last_name" type="text" class="form-control" placeholder="Last name" required>
     {{ form.email.errors }}
-        <input id="id_email" name="email" type="email" class="form-control" placeholder="Email" required autofocus>
+        <input id="id_email" name="email" type="email" class="form-control" placeholder="Email" required>
     {{ form.username.errors }}
-        <input id="id_username" name="username" type="text" class="form-control" placeholder="Username" required autofocus>
+        <input id="id_username" name="username" type="text" class="form-control" placeholder="Username" required>
     {{ form.password.errors }}
-        <input id="id_password" name="password" type="password" class="form-control" placeholder="Password" required autofocus>
+        <input id="id_password" name="password" type="password" class="form-control" placeholder="Password" required>
     {{ form.password_confirmation.errors }}
-        <input id="id_password_confirmation" name="password_confirmation" type="password" class="form-control" placeholder="Password (again)" required autofocus>
-    <hr>
+        <input id="id_password_confirmation" name="password_confirmation" type="password" class="form-control" placeholder="Password (again)" required>
+    <div class="new-existing-buttons">
+        <button class="btn btn-primary btn-lg" id="existing_frat">Join existing fraternity</button>
+        <button class="btn btn-primary btn-lg" id="new_frat">Create new fraternity</button>
+    </div>
+    {{ form.new_frat_created }}
+
+     {{ form.school }}
     {{ form.frat }}
     {{ form.frat_password.errors }}
-        <input id="id_frat_password" name="frat_password" type="password" class="form-control" placeholder="Fraternity/Sorority password" required autofocus>
+        <input id="id_frat_password" name="frat_password" type="password" class="form-control hidden" placeholder="Fraternity/Sorority password" required>
+    {{ form.frat_password_confirmation.errors }}
+        <input id="id_frat_password_confirmation" name="frat_password_confirmation" type="password" class="form-control hidden" placeholder="Fraternity/Sorority password (again)">
 
-    <button class="btn btn-lg btn-primary btn-block" value="Submit" type="submit">Sign up</button>
+    <button id="submit-button" class="btn btn-lg btn-primary btn-block hidden" value="Submit" type="submit">Sign up</button>
 
 
 </form>

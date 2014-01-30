@@ -1,14 +1,15 @@
 body {
   padding-top: 45px;
-  background-color: rgb(233, 233, 233);
+  background-color: rgb(233, 233, 233); 
 
 }
 
 /* Forms */
 .form-signin, .form-signup {
-  max-width: 330px;
+  max-width: 500px;
   padding: 15px;
   margin: 0 auto;
+  text-align: center;
 }
 .form-signin .form-signin-heading,
 .form-signin, .form-signup,
@@ -38,12 +39,14 @@ body {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-.form-signin input[type="password"],
+/*.form-signin input[type="password"],
 .form-signup input[name="frat_password"] {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-}
+}*/
+
+
 
 /* Nav bar */
 #lines-button {

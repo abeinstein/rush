@@ -14,7 +14,7 @@ from django.forms import ModelForm
 # TODO: Make this more robust. If user first takes an iPhone pic but then 
 # uploads a web pic, picture_url should be updated accordingly.
 class Rush(models.Model):
-	'''A boy living out his last days as a GDI'''
+	'''Represents a rush'''
 	first_name = models.CharField(max_length=50, blank=True)
 	last_name = models.CharField(max_length=50, blank=True)
 	phone_number = models.CharField(max_length=15, blank=True)
@@ -57,7 +57,7 @@ class Rush(models.Model):
 class Frat(models.Model):
 	'''Letters today, leaders tomorrow'''
 	name = models.CharField(max_length=100)
-	chapter = models.CharField(max_length=100)
+	chapter = models.CharField(max_length=100, blank=True)
 	university = models.CharField(max_length=100, blank=True) # Maybe use 'choices' later?
 	password = models.CharField(max_length=100)
 
@@ -74,7 +74,8 @@ class Frat(models.Model):
 
 
 	def __unicode__(self):
-		return self.name + " at " + self.university
+		return self.name
+		#return self.name + " at " + self.university
 
 
 class UserProfile(models.Model):
