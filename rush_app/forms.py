@@ -1,9 +1,11 @@
 from django import forms
 from .models import Rush, Frat
-from .helpers import get_schools
+from .colleges import ALL_COLLEGES
+from .greeks import ALL_GREEK_ORGS
 
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
+
 
 class RushCreateForm(forms.ModelForm):
     class Meta:
@@ -20,16 +22,15 @@ class SignUpForm(forms.Form):
     password = forms.CharField(required=True, widget=forms.PasswordInput)
     password_confirmation = forms.CharField(required=True, widget=forms.PasswordInput)
     school = forms.TypedChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control hidden"}),
-        choices=get_schools())
+        choices=[('', 'Select your school')] + ALL_COLLEGES)
     frat = forms.TypedChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control hidden"}),
-        choices=[('', 'Select fraternity/sorority'), ('Alpha Epsilon Pi', 'Alpha Epsilon Pi')],
+        choices=[('', 'Select your fraternity or sorority')] + ALL_GREEK_ORGS,
         )
     frat_password = forms.CharField(required=True, widget=forms.PasswordInput)
     frat_password_confirmation = forms.CharField(required=False, widget=forms.PasswordInput)
 
     def clean(self):
         cleaned_data = super(SignUpForm, self).clean()
-        import pdb; pdb.set_trace()
         username = cleaned_data.get('username')
         password = cleaned_data.get('password')
         password_confirmation = cleaned_data.get('password_confirmation')

@@ -197,3 +197,5 @@ AUTHENTICATION_BACKENDS = (
 # AUTH_PROFILE_MODULE = 'rush_app.UserProfile'
 # AUTH_USER_MODEL = 'rush_app.models.UserProfile'
 
+    
+
