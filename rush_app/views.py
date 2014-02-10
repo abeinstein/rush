@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -84,6 +84,7 @@ class RushDeleteView(DeleteView):
 class SignUpView(FormView):
     template_name="signup.html"
     form_class = SignUpForm
+    success_url = reverse_lazy('add_rush')
 
     def form_valid(self, form):
         username = form.data['username']

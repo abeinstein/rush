@@ -21,10 +21,10 @@ class SignUpForm(forms.Form):
     username = forms.CharField(required=True)
     password = forms.CharField(required=True, widget=forms.PasswordInput)
     password_confirmation = forms.CharField(required=True, widget=forms.PasswordInput)
-    school = forms.TypedChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control hidden"}),
+    school = forms.ChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control hidden"}),
         choices=[('', 'Select your school')] + ALL_COLLEGES)
-    frat = forms.TypedChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control hidden"}),
-        choices=[('', 'Select your fraternity or sorority')] + ALL_GREEK_ORGS,
+    frat = forms.ChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control hidden"}),
+        choices=[('', 'Select your fraternity or sorority')] + ALL_GREEK_ORGS
         )
     frat_password = forms.CharField(required=True, widget=forms.PasswordInput)
     frat_password_confirmation = forms.CharField(required=False, widget=forms.PasswordInput)
@@ -63,5 +63,7 @@ class SignUpForm(forms.Form):
 
             if Frat.objects.filter(name=frat, university=school).exists():
                 raise forms.ValidationError("Fraternity already exists.")
+
+        return cleaned_data
             
 

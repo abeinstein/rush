@@ -61,9 +61,6 @@ class Frat(models.Model):
 	university = models.CharField(max_length=100, blank=True) # Maybe use 'choices' later?
 	password = models.CharField(max_length=100)
 
-	class Meta:
-		unique_together = ("name", "chapter")
-
 
 	def save(self, *args, **kwargs):
 		''' Custom save method to hash frat passwords '''

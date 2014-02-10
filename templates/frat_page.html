@@ -6,7 +6,7 @@
 
 {% block navbar-rushlist %}
     <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url "add_rush" %}">Add Rush</a></li>
+        <li><a href="{% url "add_rush" %}">Add rush</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-rushes">
         <li class="dropdown">
@@ -21,8 +21,12 @@
 
 {% endblock navbar-rushlist %}
 {% block content %}
+
 <div class="container">
     <div class="starter-template">
+        {% if rushes|length_is:"0" %}
+            <h2> No rushes yet! Click 'Add rush' to add your first rush! </h2>
+        {% else %}
         <div class="row">
             <div class="col-lg-6 rush-left">
                 <table class="table table-hover table-enlarged rush-table">
@@ -125,6 +129,7 @@
                 {% endfor %}       
             </div> <!-- col-lg-6 -->
         </div> <!-- row -->
+        {% endif %}
     </div> <!-- starter-template -->
 </div> <!-- container -->
 

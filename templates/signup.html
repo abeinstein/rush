@@ -82,8 +82,9 @@ function unhideFields() {
         <button class="btn btn-primary btn-lg" id="new_frat">Create new fraternity</button>
     </div>
     {{ form.new_frat_created }}
-
+    {{ form.school.errors }}
     {{ form.school }}
+    {{ form.frat.errors }}
     {{ form.frat }}
     {{ form.frat_password.errors }}
         <input id="id_frat_password" name="frat_password" type="password" class="form-control hidden" placeholder="Fraternity/Sorority password" required>
