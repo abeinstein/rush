@@ -53,7 +53,8 @@ class RushCreateView(CreateView):
         return kwargs
 
     def get_success_url(self):
-        return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
+        return '/'
+        # return reverse(show_frat, args=[self.request.user.userprofile.frat.pk])
 
 class RushUpdateView(UpdateView):
     model = Rush
@@ -84,7 +85,6 @@ class RushDeleteView(DeleteView):
 class SignUpView(FormView):
     template_name="signup.html"
     form_class = SignUpForm
-    success_url = reverse_lazy('add_rush')
 
     def form_valid(self, form):
         username = form.data['username']
@@ -115,11 +115,6 @@ class SignUpView(FormView):
         return redirect('show_frat', frat_id=frat.id)
 
     
-
-
-
-
-
 # Function based views TODO: Rewrite into class-based views
 
 def index(request):
