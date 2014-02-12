@@ -98,10 +98,9 @@ class SignUpView(FormView):
         user.save()
 
         if new_frat_created:
-            hashed_frat_password = make_password(form.data['frat_password'])
             frat = Frat.objects.create(name=form.data['frat'], 
                                        university=form.data['school'],
-                                       password=hashed_frat_password)
+                                       password=form.data['frat_password'])
         else:
             frat = Frat.objects.get(name=form.data['frat'], university=form.data['school'])
         
